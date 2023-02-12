@@ -67,3 +67,4 @@ INSERT INTO compo VALUES (6,14);
 INSERT INTO compo VALUES (6,11);
 INSERT INTO compo VALUES (6,9);
 
+select * from pizza INNER JOIN compo ON compo.idP = pizza.id INNER JOIN ingredients ON compo.idI = ingredients.id;
