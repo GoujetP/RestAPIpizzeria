@@ -11,7 +11,7 @@ public class PizzaDAO {
 	public static Pizza findById(int id) {
         Pizza pizza = null;
         try {
-            String query = "Select * from pizzas where id = " + id + "";
+            String query = "Select * from compo where idP = " + id + "";
             DS.getConnection();
             ResultSet rs = DS.executeQuery(query);
             DS.closeConnection();
@@ -29,7 +29,7 @@ public class PizzaDAO {
     public static List<Pizza> findAll() {
         List<Pizza> pizza = new ArrayList<>();
         try {
-            String query = "Select * from pizzaq";
+            String query = "Select * from compo";
             DS.getConnection();
             ResultSet rs = DS.executeQuery(query);
             DS.closeConnection();
