@@ -66,7 +66,6 @@ public class PizzaRestAPI extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         res.setContentType("application/json;charset=UTF-8");
-        PrintWriter out = res.getWriter();
         StringBuilder data = new StringBuilder();
         BufferedReader reader = req.getReader();
         String line;
@@ -86,7 +85,7 @@ public class PizzaRestAPI extends HttpServlet {
     public void doDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		System.out.println("DELETE:"  + req.toString());
         res.setContentType("application/json;charset=UTF-8");
-        PrintWriter out = res.getWriter();
+        
         String info = req.getPathInfo();
         if (info == null || info.equals("/")) {
         	res.sendError(HttpServletResponse.SC_BAD_REQUEST);
