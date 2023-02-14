@@ -11,12 +11,12 @@ public class PizzaDAO {
 	public static Pizza findById(int id) {
         Pizza pizza = null;
         try {
-            String query = "Select * from compo where idP = " + id + "";
+            String query = "Select * from pizza where id = " + id + "";
             DS.getConnection();
             ResultSet rs = DS.executeQuery(query);
             DS.closeConnection();
             rs.next();
-            pizza = new Pizza( rs.getString("name"),rs.getString("pate"),rs.getDouble("prix"));
+            pizza = new Pizza( rs.getString("name"),rs.getString("pate"),rs.getDouble("price"));
             System.out.println("All is ok!");
         } catch (Exception e) {
             return null;
@@ -29,12 +29,12 @@ public class PizzaDAO {
     public static List<Pizza> findAll() {
         List<Pizza> pizza = new ArrayList<>();
         try {
-            String query = "Select * from compo";
+            String query = "select * from pizza ;";
             DS.getConnection();
             ResultSet rs = DS.executeQuery(query);
             DS.closeConnection();
             while(rs.next()){
-                pizza.add(new Pizza( rs.getString("name"),rs.getString("pate"),rs.getDouble("prix")));
+                pizza.add(new Pizza( rs.getString("name"),rs.getString("pate"),rs.getDouble("price")));
             }
             System.out.println("All is ok!");
         } catch (Exception e) {

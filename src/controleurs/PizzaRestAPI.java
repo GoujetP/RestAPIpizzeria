@@ -1,33 +1,25 @@
 package controleurs;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.IngredientDAO;
+import dao.PizzaDAO;
 import dto.Ingredient;
+import dto.Pizza;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-
-
-
-@WebServlet("/ingredients/*")
-public class IngredientRestAPI extends HttpServlet {
-	private Map<Integer, Ingredient> ingredients ;
+@WebServlet("/pizzas/*")
+public class PizzaRestAPI extends HttpServlet {
+	
+	
 	
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         res.setContentType("application/json;charset=UTF-8");
@@ -35,7 +27,7 @@ public class IngredientRestAPI extends HttpServlet {
         ObjectMapper objectMapper = new ObjectMapper();
         String info = req.getPathInfo();
         if (info == null || info.equals("/")) {
-            Collection<Ingredient> models = IngredientDAO.findAll();
+            Collection<Pizza> models = PizzaDAO.findAll();
             String jsonstring = objectMapper.writeValueAsString(models);
             out.print(jsonstring);
             return;
@@ -48,7 +40,7 @@ public class IngredientRestAPI extends HttpServlet {
         String id = splits[1];
         if (splits.length==3) {
         	if (splits[2].equals("name")) {
-        		out.print(objectMapper.writeValueAsString(IngredientDAO.findById(Integer.valueOf(id)).getName()));
+        		out.print(objectMapper.writeValueAsString(PizzaDAO.findById(Integer.valueOf(id)).getName()));
         		return;
         	}
         	else {
@@ -58,17 +50,18 @@ public class IngredientRestAPI extends HttpServlet {
         }
 
         
-        if (IngredientDAO.findById(Integer.valueOf(id)) == null  ) {
+        if (PizzaDAO.findById(Integer.valueOf(id)) == null  ) {
         	res.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-        out.print(objectMapper.writeValueAsString(IngredientDAO.findById(Integer.valueOf(id))));
+        out.print(objectMapper.writeValueAsString(PizzaDAO.findById(Integer.valueOf(id))));
         
         
         
         
         return;
     }
+	
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -81,37 +74,12 @@ public class IngredientRestAPI extends HttpServlet {
         	data.append(line);
         }
         
-        Ingredient i = objectMapper.readValue(data.toString(), Ingredient.class);
+        Pizza p = objectMapper.readValue(data.toString(), Pizza.class);
         System.out.println(data);
-        if(IngredientDAO.findById(i.getId()) != null){
+        if(IngredientDAO.findById(p.getId()) != null){
             res.sendError(HttpServletResponse.SC_CONFLICT); 
             return;
         }
-        IngredientDAO.save(i);
+        PizzaDAO.save(p);
     }
-	
-	public void doDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		res.setContentType("application/json;charset=UTF-8");
-        PrintWriter out = res.getWriter();
-        ObjectMapper objectMapper = new ObjectMapper();
-        String info = req.getPathInfo();
-        if (info == null || info.equals("/")) {
-        	res.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-        String[] splits = info.split("/");
-        if (splits.length != 2) {
-            res.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-        String id = splits[1];
-        if (IngredientDAO.findById(Integer.valueOf(id)) == null) {
-            res.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
-        IngredientDAO.remove(Integer.parseInt(id));
-        return;
-	}
-    
-        
 }
