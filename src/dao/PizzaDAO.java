@@ -53,7 +53,20 @@ public class PizzaDAO {
 			System.out.println("ERREUR \n" + e.getMessage());
 		}
 	}
-    
+    public static boolean contient (int idP,int idI){
+        boolean rslt=false;
+        try{
+            String query = "Select * from compo where id="+idP+"and idI ="+idI+";";
+            DS.getConnection();
+			ResultSet rs=DS.executeQuery(query);
+			DS.closeConnection();
+            rslt=rs.next();
+		} catch(Exception e) {
+			System.out.println("ERREUR \n" + e.getMessage());
+		}
+        return rslt;
+    }  
+
     public static void remove(int id){
 		try{
 			String query = "DELETE from pizza where id="+id;
@@ -64,4 +77,15 @@ public class PizzaDAO {
 			System.out.println("ERREUR \n" + e.getMessage());
 		}
 	}
+    public static void removeIP(int idP,int idI){
+		try{
+			String query = "DELETE from compo where id="+idP+"and idI ="+idI+";";
+			DS.getConnection();
+			DS.executeUpdate(query);
+			DS.closeConnection();
+		} catch(Exception e) {
+			System.out.println("ERREUR \n" + e.getMessage());
+		}
+	}
+
 }

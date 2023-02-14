@@ -24,6 +24,8 @@ INSERT INTO ingredients VALUES (18,'poulet');
 
 
 CREATE TABLE pizza(id int,name text,price numeric,pate text,primary key (id));
+
+
 INSERT INTO pizza VALUES (1,'pizza Saumon',9.99,'fine');
 INSERT INTO pizza VALUES (2,'pizza 4 fromages',9.99,'fine');
 INSERT INTO pizza VALUES (3,'pizza Reine',15.0,'Mozza-crust');
@@ -32,7 +34,11 @@ INSERT INTO pizza VALUES (5,'pizza Jambon',9.99,'fine');
 INSERT INTO pizza VALUES (6,'pizza Hawaiian',13.0,'Mozza-crust');
 
 
-CREATE TABLE compo(idP int,idI int,foreign key (idP) references pizza(id),foreign key (idI) references ingredients(id),primary key (idI,idP));
+CREATE TABLE compo(idP int,idI int,
+foreign key (idP) references pizza(id) on delete cascade,
+foreign key (idI) references ingredients(id),primary key (idI,idP));
+
+
 INSERT INTO compo VALUES (1,1);
 INSERT INTO compo VALUES (1,15);
 INSERT INTO compo VALUES (1,14);
