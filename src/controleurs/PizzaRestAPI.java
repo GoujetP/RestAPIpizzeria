@@ -104,18 +104,19 @@ public class PizzaRestAPI extends HttpServlet {
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-        if(splits.length==2){
-        PizzaDAO.remove(Integer.parseInt(idP));
-        return;
-        }
         if(splits.length==3){
             String idI = splits[2];
             if(PizzaDAO.contient(Integer.parseInt(idP), Integer.parseInt(idI))){
                 res.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
-        PizzaDAO.removeIP(Integer.valueOf(idP), Integer.valueOf(idI));
+        PizzaDAO.removeIP(Integer.parseInt(idP), Integer.parseInt(idI));
 
         }
+        if(splits.length==2){
+        PizzaDAO.remove(Integer.parseInt(idP));
+        return;
+        }
+        
 	}
 }

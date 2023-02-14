@@ -54,17 +54,23 @@ public class PizzaDAO {
 		}
 	}
     public static boolean contient (int idP,int idI){
-        boolean rslt=false;
+        int size=0;
         try{
-            String query = "Select * from compo where id="+idP+"and idI ="+idI+";";
+            String query = "Select count(*) from compo where idP="+idP+"and idI ="+idI+";";
             DS.getConnection();
 			ResultSet rs=DS.executeQuery(query);
 			DS.closeConnection();
-            rslt=rs.next();
+            if (rs != null) 
+            {
+              rs.last();    // moves cursor to the last row
+                 size = rs.getRow(); // get row id 
+            }
+
 		} catch(Exception e) {
 			System.out.println("ERREUR \n" + e.getMessage());
 		}
-        return rslt;
+       
+        return size!=0;
     }  
 
     public static void remove(int id){
@@ -79,7 +85,7 @@ public class PizzaDAO {
 	}
     public static void removeIP(int idP,int idI){
 		try{
-			String query = "DELETE from compo where id="+idP+"and idI ="+idI+";";
+			String query = "DELETE from compo where idP="+idP+"and idI ="+idI+";";
 			DS.getConnection();
 			DS.executeUpdate(query);
 			DS.closeConnection();
