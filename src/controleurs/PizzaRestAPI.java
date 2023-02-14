@@ -84,23 +84,23 @@ public class PizzaRestAPI extends HttpServlet {
     }
 
     public void doDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		res.setContentType("application/json;charset=UTF-8");
+		System.out.println("DELETE:"  + req.toString());
+        res.setContentType("application/json;charset=UTF-8");
         PrintWriter out = res.getWriter();
-        ObjectMapper objectMapper = new ObjectMapper();
         String info = req.getPathInfo();
         if (info == null || info.equals("/")) {
         	res.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         String[] splits = info.split("/");
-        if (splits.length != 3) {
+        if (splits.length > 3) {
             res.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         
         String idP = splits[1];
 
-        if (PizzaDAO.findById(Integer.valueOf(idP)) == null) {
+        if (PizzaDAO.findById(Integer.parseInt(idP)) == null) {
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }

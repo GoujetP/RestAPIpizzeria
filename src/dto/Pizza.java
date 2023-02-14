@@ -9,11 +9,10 @@ public class Pizza {
 	protected String pate;
 	protected double prix;
 	
-	private static int cpt = 0;
 	
-	public Pizza(String name, String pate, double prix) {
+	public Pizza(int id,String name, String pate, double prix) {
 		super();
-		this.id=cpt++;
+		this.id=id;
 		this.name = name;
 		this.pate = pate;
 		this.prix = prix;
