@@ -10,7 +10,7 @@ public class Pizza {
 	protected double prix;
 	
 	private static int cpt = 0;
-	
+	public Pizza(){ super(); }
 	public Pizza(String name, String pate, double prix) {
 		super();
 		this.id=cpt++;
@@ -19,6 +19,8 @@ public class Pizza {
 		this.prix = prix;
 		//this.ingredients = ingredients;
 	}
+
+
 
 	public int getId() {
 		return id;

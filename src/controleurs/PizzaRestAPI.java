@@ -27,8 +27,8 @@ public class PizzaRestAPI extends HttpServlet {
         ObjectMapper objectMapper = new ObjectMapper();
         String info = req.getPathInfo();
         if (info == null || info.equals("/")) {
-            Collection<Pizza> models = PizzaDAO.findAll();
-            String jsonstring = objectMapper.writeValueAsString(models);
+            Collection<Pizza> model = PizzaDAO.findAll();
+            String jsonstring = objectMapper.writeValueAsString(model);
             out.print(jsonstring);
             return;
         }

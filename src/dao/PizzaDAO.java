@@ -9,7 +9,7 @@ import dto.Pizza;
 
 public class PizzaDAO {
 	public static Pizza findById(int id) {
-        Pizza pizza = null;
+        Pizza pizza = new Pizza();
         try {
             String query = "Select * from pizza where id = " + id + "";
             DS.getConnection();
@@ -45,7 +45,7 @@ public class PizzaDAO {
 
     public static void save(Pizza pizza){
 		try{
-			String query = "Insert into pizza values("+pizza.getId()+",'"+pizza.getName()+"','"+pizza.getPrix()+")";
+			String query = "Insert into pizza values("+pizza.getId()+",'"+pizza.getName()+"',"+pizza.getPrix()+")";
 			DS.getConnection();
 			DS.executeUpdate(query);
 			DS.closeConnection();
