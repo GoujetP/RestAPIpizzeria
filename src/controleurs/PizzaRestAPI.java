@@ -3,6 +3,7 @@ package controleurs;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.Collection;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,11 +12,11 @@ import dao.IngredientDAO;
 import dao.PizzaDAO;
 import dto.Ingredient;
 import dto.Pizza;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/pizzas/*")
 public class PizzaRestAPI extends HttpServlet {
 	
@@ -83,39 +84,64 @@ public class PizzaRestAPI extends HttpServlet {
         PizzaDAO.save(p);
     }
 
+    /*@Override
+    protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        res.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = res.getWriter();
+        StringBuilder data = new StringBuilder();
+        BufferedReader reader = req.getReader();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            data.append(line);
+        }
+
+        Pizza p = objectMapper.readValue(data.toString(), Pizza.class);
+        System.out.println(data);
+        if(IngredientDAO.findById(p.getId()) != null){
+            res.sendError(HttpServletResponse.SC_CONFLICT);
+            return;
+        }
+        PizzaDAO.save(p);
+    }
+*/
     public void doDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		res.setContentType("application/json;charset=UTF-8");
+        System.out.println("requete: " +req.toString());
+        //doGet(req, res);
+        res.setContentType("application/json;charset=UTF-8");
         PrintWriter out = res.getWriter();
         ObjectMapper objectMapper = new ObjectMapper();
         String info = req.getPathInfo();
+        System.out.println("PathInfo :" +info );
         if (info == null || info.equals("/")) {
-        	res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         String[] splits = info.split("/");
+
+
+        String idP = splits[1];
+        System.out.println("Splits : "+Arrays.toString(splits));
+        if (PizzaDAO.findById(Integer.parseInt(idP)) == null) {
+            res.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+        if (splits.length == 2) {
+            PizzaDAO.remove(Integer.parseInt(idP));
+            return;
+        }
         if (splits.length != 3) {
             res.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        
-        String idP = splits[1];
-
-        if (PizzaDAO.findById(Integer.valueOf(idP)) == null) {
-            res.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
-        if(splits.length==2){
-        PizzaDAO.remove(Integer.parseInt(idP));
-        return;
-        }
-        if(splits.length==3){
+        if (splits.length == 3) {
             String idI = splits[2];
-            if(PizzaDAO.contient(Integer.parseInt(idP), Integer.parseInt(idI))){
+            if (PizzaDAO.contient(Integer.parseInt(idP), Integer.parseInt(idI))) {
                 res.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
-        PizzaDAO.removeIP(Integer.valueOf(idP), Integer.valueOf(idI));
+            PizzaDAO.removeIP(Integer.valueOf(idP), Integer.valueOf(idI));
 
         }
-	}
+    }
 }
