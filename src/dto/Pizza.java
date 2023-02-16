@@ -10,7 +10,7 @@ public class Pizza {
 	protected String name;
 	protected String pate;
 	protected double prix;
-	protected List<Ingredient>compo=new ArrayList<>();
+	protected List<Ingredient>compo=new ArrayList<Ingredient>();
 
 	
 	public Pizza(int id,String name, String pate, double prix,List<Ingredient>compoP) {
@@ -54,7 +54,14 @@ public class Pizza {
 		this.prix = prix;
 	}
 
-	/*public Map<Integer, Ingredient> getIngredients() {
+	public List<Ingredient> getCompo() {
+		return compo;
+	}
+
+	public void setCompo(List<Ingredient> compo) {
+		this.compo = compo;
+	}
+/*public Map<Integer, Ingredient> getIngredients() {
 		return ingredients;
 	}
 

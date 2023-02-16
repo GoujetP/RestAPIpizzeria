@@ -26,8 +26,8 @@ public class CompoDao {
         return rslt;
     }
 
-   // public static void main(String[] args) {
-     //   System.out.println(findCompoById(5).toString());
-    //}
+    public static void main(String[] args) {
+       System.out.println(findCompoById(5).toString());
+    }
 
 }
