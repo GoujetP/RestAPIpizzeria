@@ -47,7 +47,13 @@ public class PizzaDAO {
 		try{
 			String query = "Insert into pizza values("+pizza.getId()+",'"+pizza.getName()+"','"+pizza.getPrix()+")";
 			DS.getConnection();
+            String queryCompo = "";
+            for (Ingredient i : pizza.getCompo()){
+                queryCompo = "Insert into compo values("+pizza.getId()+","+i.getId()+")";
+
+            }
 			DS.executeUpdate(query);
+            DS.executeUpdate(queryCompo);
 			DS.closeConnection();
 		} catch(Exception e) {
 			System.out.println("ERREUR \n" + e.getMessage());

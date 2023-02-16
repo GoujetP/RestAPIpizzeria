@@ -21,7 +21,13 @@ public class Pizza {
 		this.prix = prix;
 		this.compo=compoP;		//this.ingredients = ingredients;
 	}
-
+	public Pizza(int id,String name, String pate, double prix) {
+		super();
+		this.id=id;
+		this.name = name;
+		this.pate = pate;
+		this.prix = prix;
+	}
 	public int getId() {
 		return id;
 	}

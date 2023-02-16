@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.List;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.IngredientDAO;
@@ -69,12 +71,21 @@ public class PizzaRestAPI extends HttpServlet {
         StringBuilder data = new StringBuilder();
         BufferedReader reader = req.getReader();
         String line;
-        while ((line = reader.readLine()) != null) {
+        StringBuilder compo = new StringBuilder();
+        while ((line = reader.readLine()) != null && !(line = reader.readLine()).contains("compo")) {
         	data.append(line);
         }
-        
+
+        while ((line = reader.readLine()) != null){
+            compo.append(line);
+        }
+        JsonNode json = objectMapper.readTree(compo.toString());
+        System.out.println(json.isArray());
+        Ingredient[] compoIngredient = objectMapper.readValue(compo.toString(), Ingredient[].class);
         Pizza p = objectMapper.readValue(data.toString(), Pizza.class);
+        p.setCompo(List.of(compoIngredient));
         System.out.println(data);
+        System.out.println(line);
         if(IngredientDAO.findById(p.getId()) != null){
             res.sendError(HttpServletResponse.SC_CONFLICT); 
             return;
