@@ -10,8 +10,8 @@ public class Pizza {
 	protected String name;
 	protected String pate;
 	protected double prix;
-
 	protected List<Ingredient>compo=new ArrayList<>();
+
 	
 	public Pizza(int id,String name, String pate, double prix,List<Ingredient>compoP) {
 		super();
