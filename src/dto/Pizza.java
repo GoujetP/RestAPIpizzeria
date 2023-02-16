@@ -1,5 +1,7 @@
 package dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -8,20 +10,24 @@ public class Pizza {
 	protected String name;
 	protected String pate;
 	protected double prix;
+	protected List<Ingredient>compo=new ArrayList<Ingredient>();
+
 	
-	private static int cpt = 0;
-	public Pizza(){ super(); }
-	public Pizza(String name, String pate, double prix) {
+	public Pizza(int id,String name, String pate, double prix,List<Ingredient>compoP) {
 		super();
-		this.id=cpt++;
+		this.id=id;
 		this.name = name;
 		this.pate = pate;
 		this.prix = prix;
-		//this.ingredients = ingredients;
+		this.compo=compoP;		//this.ingredients = ingredients;
 	}
-
-
-
+	public Pizza(int id,String name, String pate, double prix) {
+		super();
+		this.id=id;
+		this.name = name;
+		this.pate = pate;
+		this.prix = prix;
+	}
 	public int getId() {
 		return id;
 	}
@@ -54,7 +60,14 @@ public class Pizza {
 		this.prix = prix;
 	}
 
-	/*public Map<Integer, Ingredient> getIngredients() {
+	public List<Ingredient> getCompo() {
+		return compo;
+	}
+
+	public void setCompo(List<Ingredient> compo) {
+		this.compo = compo;
+	}
+/*public Map<Integer, Ingredient> getIngredients() {
 		return ingredients;
 	}
 

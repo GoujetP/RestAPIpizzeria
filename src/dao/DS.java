@@ -17,7 +17,10 @@ public  class DS {
             String url = "jdbc:postgresql://psqlserv:5432/but2";
             String login = "mounirkhatrietu";
             String mdp = "moi";
-            Connection con = DriverManager.getConnection(url,login,mdp);
+            String urlM ="jdbc:postgresql://localhost:5432/but2";
+            String loginM ="postgres";
+            String mdpM = "root";
+            Connection con = DriverManager.getConnection(urlM,loginM,mdpM);
             DS.connection = con;
         } catch(Exception e) {
             e.printStackTrace();
