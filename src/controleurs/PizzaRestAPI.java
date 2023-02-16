@@ -3,10 +3,10 @@ package controleurs;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.IngredientDAO;
@@ -52,11 +52,11 @@ public class PizzaRestAPI extends HttpServlet {
         }
 
         
-        if (PizzaDAO.findById(Integer.valueOf(id)) == null  ) {
+        if (PizzaDAO.findById(Integer.parseInt(id)) == null  ) {
         	res.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-        out.print(objectMapper.writeValueAsString(PizzaDAO.findById(Integer.valueOf(id))));
+        out.print(objectMapper.writeValueAsString(PizzaDAO.findById(Integer.parseInt(id))));
         
         
         
@@ -71,22 +71,16 @@ public class PizzaRestAPI extends HttpServlet {
         PrintWriter out = res.getWriter();
         StringBuilder data = new StringBuilder();
         BufferedReader reader = req.getReader();
-        String line;
-        StringBuilder compo = new StringBuilder();
-        while ((line = reader.readLine()) != null && !(line = reader.readLine()).contains("compo")) {
-        	data.append(line);
+        String line = "";
+               while ((line = reader.readLine()) != null) {
+                data.append(line);
         }
-
-        while ((line = reader.readLine()) != null){
-            compo.append(line);
-        }
-        JsonNode json = objectMapper.readTree(compo.toString());
-        System.out.println(json.isArray());
-        Ingredient[] compoIngredient = objectMapper.readValue(compo.toString(), Ingredient[].class);
-        Pizza p = objectMapper.readValue(data.toString(), Pizza.class);
-        p.setCompo(List.of(compoIngredient));
-        System.out.println(data);
-        System.out.println(line);
+        String[] pizzaSplitCompo = data.toString().split("compo");
+        Ingredient[] compoIngredient = objectMapper.readValue(pizzaSplitCompo[1].substring(2,pizzaSplitCompo[1].length()-1) , Ingredient[].class);
+        Pizza p = objectMapper.readValue(pizzaSplitCompo[0].substring(0,pizzaSplitCompo[0].length()-2)+"}", Pizza.class);
+        ArrayList<Ingredient> compoFinal = new ArrayList<Ingredient>();
+        Collections.addAll(compoFinal, compoIngredient);
+        p.setCompo(compoFinal);
         if(IngredientDAO.findById(p.getId()) != null){
             res.sendError(HttpServletResponse.SC_CONFLICT); 
             return;

@@ -34,6 +34,7 @@ public class PizzaDAO {
             ResultSet rs = DS.executeQuery(query);
             DS.closeConnection();
             while(rs.next()){
+
                 pizza.add(new Pizza( rs.getInt("id"),rs.getString("name"),rs.getString("pate"),rs.getDouble("price"),CompoDao.findCompoById(rs.getInt("id"))));
             }
             System.out.println("All is ok!");
@@ -45,11 +46,11 @@ public class PizzaDAO {
 
     public static void save(Pizza pizza){
 		try{
-			String query = "Insert into pizza values("+pizza.getId()+",'"+pizza.getName()+"',"+pizza.getPrix()+")";
+			String query = "Insert into pizza values("+pizza.getId()+",'"+pizza.getName()+"',"+pizza.getPrix()+",'"+pizza.getPate()+"')";
 			DS.getConnection();
             String queryCompo = "";
             for (Ingredient i : pizza.getCompo()){
-                queryCompo = "Insert into compo values("+pizza.getId()+","+i.getId()+")";
+                queryCompo = queryCompo +" Insert into compo values("+pizza.getId()+","+i.getId()+");";
 
             }
 			DS.executeUpdate(query);
