@@ -1,5 +1,7 @@
 package dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -8,15 +10,16 @@ public class Pizza {
 	protected String name;
 	protected String pate;
 	protected double prix;
+
+	protected List<Ingredient>compo=new ArrayList<>();
 	
-	
-	public Pizza(int id,String name, String pate, double prix) {
+	public Pizza(int id,String name, String pate, double prix,List<Ingredient>compoP) {
 		super();
 		this.id=id;
 		this.name = name;
 		this.pate = pate;
 		this.prix = prix;
-		//this.ingredients = ingredients;
+		this.compo=compoP;		//this.ingredients = ingredients;
 	}
 
 	public int getId() {

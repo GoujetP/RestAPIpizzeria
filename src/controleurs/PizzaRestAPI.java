@@ -11,11 +11,11 @@ import dao.IngredientDAO;
 import dao.PizzaDAO;
 import dto.Ingredient;
 import dto.Pizza;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/pizzas/*")
 public class PizzaRestAPI extends HttpServlet {
 	
@@ -40,7 +40,7 @@ public class PizzaRestAPI extends HttpServlet {
         String id = splits[1];
         if (splits.length==3) {
         	if (splits[2].equals("name")) {
-        		out.print(objectMapper.writeValueAsString(PizzaDAO.findById(Integer.valueOf(id)).getName()));
+        		out.print(objectMapper.writeValueAsString(PizzaDAO.findById(Integer.parseInt(id)).getName()));
         		return;
         	}
         	else {

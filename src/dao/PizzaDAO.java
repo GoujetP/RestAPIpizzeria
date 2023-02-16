@@ -16,7 +16,7 @@ public class PizzaDAO {
             ResultSet rs = DS.executeQuery(query);
             DS.closeConnection();
             rs.next();
-            pizza = new Pizza( rs.getInt("id"),rs.getString("name"),rs.getString("pate"),rs.getDouble("price"));
+            pizza = new Pizza( rs.getInt("id"),rs.getString("name"),rs.getString("pate"),rs.getDouble("price"),CompoDao.findCompoById(rs.getInt("id")));
             System.out.println("All is ok!");
         } catch (Exception e) {
             return null;
@@ -34,7 +34,7 @@ public class PizzaDAO {
             ResultSet rs = DS.executeQuery(query);
             DS.closeConnection();
             while(rs.next()){
-                pizza.add(new Pizza( rs.getInt("id"),rs.getString("name"),rs.getString("pate"),rs.getDouble("price")));
+                pizza.add(new Pizza( rs.getInt("id"),rs.getString("name"),rs.getString("pate"),rs.getDouble("price"),CompoDao.findCompoById(rs.getInt("id"))));
             }
             System.out.println("All is ok!");
         } catch (Exception e) {

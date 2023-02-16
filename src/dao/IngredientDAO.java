@@ -16,7 +16,7 @@ public class IngredientDAO {
             ResultSet rs = DS.executeQuery(query);
             DS.closeConnection();
             rs.next();
-            ingredient = new Ingredient(rs.getInt("id"), rs.getString("name"));
+            ingredient = new Ingredient(rs.getInt("id"), rs.getString("name"),rs.getDouble("price"));
             System.out.println("All is ok!");
         } catch (Exception e) {
             return null;
@@ -34,7 +34,7 @@ public class IngredientDAO {
             ResultSet rs = DS.executeQuery(query);
             DS.closeConnection();
             while(rs.next()){
-                ingredient.add(new Ingredient(rs.getInt("id"), rs.getString("name")));
+                ingredient.add(new Ingredient(rs.getInt("id"), rs.getString("name"),rs.getDouble("price")));
             }
             System.out.println("All is ok!");
         } catch (Exception e) {
@@ -45,7 +45,7 @@ public class IngredientDAO {
 
     public static void save(Ingredient ingredient){
 		try{
-			String query = "Insert into ingredients values("+ingredient.getId()+",'"+ingredient.getName()+"')";
+			String query = "Insert into ingredients values("+ingredient.getId()+",'"+ingredient.getName()+"',"+ingredient.getPrice()+")";
 			DS.getConnection();
 			DS.executeUpdate(query);
 			DS.closeConnection();
