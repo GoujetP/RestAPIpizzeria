@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.IngredientDAO;
@@ -148,6 +149,46 @@ public class PizzaRestAPI extends HttpServlet {
         }
 
 	}
+
+
+    public void service(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+        if (req.getMethod().equalsIgnoreCase("PATCH")) {
+            doPatch(req, res);
+        } else {
+            super.service(req, res);
+        }
+    }
+    public void doPatch(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
+        String info = req.getPathInfo();
+        StringBuilder data = new StringBuilder();
+        BufferedReader reader = req.getReader();
+        String line ="";
+        ObjectMapper objectMapper = new ObjectMapper();
+        res.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = res.getWriter();
+
+        String[] splits = info.split("/");
+        if (splits.length != 2 ) {
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        String id = splits[1];
+
+        while ((line = reader.readLine()) != null) {
+            data.append(line);
+        }
+
+
+        JsonNode jsonNodePizzaBasic = objectMapper.readTree(objectMapper.writeValueAsString(PizzaDAO.findById(Integer.parseInt(id))));
+        JsonNode jsonNodePizzaModif = objectMapper.readTree(data.toString());
+        JsonNode mergePatch = PizzaDAO.doMergeWithJackson(jsonNodePizzaBasic, jsonNodePizzaModif);
+        String pizzaFinalModif = objectMapper.writeValueAsString(mergePatch);
+        Pizza p = objectMapper.readValue(pizzaFinalModif, Pizza.class);
+        PizzaDAO.remove(Integer.parseInt(id));
+        PizzaDAO.save(p);
+    }
+
 
 
 

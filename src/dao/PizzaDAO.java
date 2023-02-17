@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import dto.Ingredient;
 import dto.Pizza;
 
@@ -113,8 +115,20 @@ public class PizzaDAO {
         }
     }
 
-    public static void modify (String columnName,Pizza p , String valeur){
-
+    public static JsonNode doMergeWithJackson(JsonNode jsonNode1, JsonNode jsonNode2) {
+        if (jsonNode1.isObject() && jsonNode2.isObject()) {
+            ObjectNode objectNode = (ObjectNode) jsonNode1;
+            jsonNode2.fields().forEachRemaining(entry -> {
+                JsonNode value = entry.getValue();
+                if (value.isObject()) {
+                    objectNode.set(entry.getKey(), doMergeWithJackson(objectNode.get(entry.getKey()), value));
+                } else {
+                    objectNode.set(entry.getKey(), value);
+                }
+            });
+            return objectNode;
+        }
+        return jsonNode2;
     }
 
 }
