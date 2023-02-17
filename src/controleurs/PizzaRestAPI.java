@@ -75,13 +75,9 @@ public class PizzaRestAPI extends HttpServlet {
         BufferedReader reader = req.getReader();
         String line ="";
         if (info == null || info.equals("/")) {
-
-            int cpt = 0;
             while ((line = reader.readLine()) != null) {
-                cpt+=1;
                 data.append(line);
             }
-            System.out.println(cpt);
 
             String[] pizzaSplitCompo = data.toString().split("compo");
             System.out.println("Ingredients --> "+pizzaSplitCompo[1].substring(2,pizzaSplitCompo[1].length()-1));
@@ -99,15 +95,11 @@ public class PizzaRestAPI extends HttpServlet {
             return;
         }
         String[] splits = info.split("/");
-        for (String s : splits){
-
-        }
         if (splits.length != 2 ) {
             res.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         String id = splits[1];
-        System.out.println(id + "    | après verif pas égal à 2");
         Pizza p = objectMapper.readValue(objectMapper.writeValueAsString(PizzaDAO.findById(Integer.parseInt(id))), Pizza.class);
         while ((line = reader.readLine()) != null) {
             data.append(line);
