@@ -66,26 +66,58 @@ public class PizzaRestAPI extends HttpServlet {
 	
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        String info = req.getPathInfo();
+
         ObjectMapper objectMapper = new ObjectMapper();
         res.setContentType("application/json;charset=UTF-8");
         PrintWriter out = res.getWriter();
         StringBuilder data = new StringBuilder();
         BufferedReader reader = req.getReader();
-        String line = "";
-               while ((line = reader.readLine()) != null) {
+        String line ="";
+        if (info == null || info.equals("/")) {
+
+            int cpt = 0;
+            while ((line = reader.readLine()) != null) {
+                cpt+=1;
                 data.append(line);
-        }
-        String[] pizzaSplitCompo = data.toString().split("compo");
-        Ingredient[] compoIngredient = objectMapper.readValue(pizzaSplitCompo[1].substring(2,pizzaSplitCompo[1].length()-1) , Ingredient[].class);
-        Pizza p = objectMapper.readValue(pizzaSplitCompo[0].substring(0,pizzaSplitCompo[0].length()-2)+"}", Pizza.class);
-        ArrayList<Ingredient> compoFinal = new ArrayList<Ingredient>();
-        Collections.addAll(compoFinal, compoIngredient);
-        p.setCompo(compoFinal);
-        if(IngredientDAO.findById(p.getId()) != null){
-            res.sendError(HttpServletResponse.SC_CONFLICT); 
+            }
+            System.out.println(cpt);
+
+            String[] pizzaSplitCompo = data.toString().split("compo");
+            System.out.println("Ingredients --> "+pizzaSplitCompo[1].substring(2,pizzaSplitCompo[1].length()-1));
+            System.out.println("Pizza --> "+pizzaSplitCompo[0].substring(0,pizzaSplitCompo[0].length()-2)+"}");
+            Ingredient[] compoIngredient = objectMapper.readValue(pizzaSplitCompo[1].substring(2,pizzaSplitCompo[1].length()-1) , Ingredient[].class);
+            Pizza p = objectMapper.readValue(pizzaSplitCompo[0].substring(0,pizzaSplitCompo[0].length()-2)+"}", Pizza.class);
+            ArrayList<Ingredient> compoFinal = new ArrayList<Ingredient>();
+            Collections.addAll(compoFinal, compoIngredient);
+            p.setCompo(compoFinal);
+            if(IngredientDAO.findById(p.getId()) != null){
+                res.sendError(HttpServletResponse.SC_CONFLICT);
+                return;
+            }
+            PizzaDAO.save(p);
             return;
         }
-        PizzaDAO.save(p);
+        String[] splits = info.split("/");
+        for (String s : splits){
+
+        }
+        if (splits.length != 2 ) {
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        String id = splits[1];
+        System.out.println(id + "    | après verif pas égal à 2");
+        Pizza p = objectMapper.readValue(objectMapper.writeValueAsString(PizzaDAO.findById(Integer.parseInt(id))), Pizza.class);
+        while ((line = reader.readLine()) != null) {
+            data.append(line);
+        }
+        Ingredient i = objectMapper.readValue(data.toString(), Ingredient.class);
+        PizzaDAO.addIngredient(p,i);
+        return ;
+
+
+
     }
 
     public void doDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -124,4 +156,7 @@ public class PizzaRestAPI extends HttpServlet {
         }
 
 	}
+
+
+
 }

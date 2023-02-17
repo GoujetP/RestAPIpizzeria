@@ -101,4 +101,20 @@ public class PizzaDAO {
 		}
 	}
 
+    public static void addIngredient(Pizza p ,Ingredient i){
+        try{
+
+            String query = "Insert into compo values(" +p.getId()+","+i.getId()+")";
+            DS.getConnection();
+            DS.executeUpdate(query);
+            DS.closeConnection();
+        } catch(Exception e) {
+            System.out.println("ERREUR \n" + e.getMessage());
+        }
+    }
+
+    public static void modify (String columnName,Pizza p , String valeur){
+
+    }
+
 }
