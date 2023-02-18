@@ -45,8 +45,10 @@ public class PizzaRestAPI extends HttpServlet {
         	if (splits[2].equals("name")) {
         		out.print(objectMapper.writeValueAsString(PizzaDAO.findById(Integer.parseInt(id)).getName()));
         		return;
-        	}
-        	else {
+        	} else if(splits[2].equals("prixFinal")) {
+                    out.print(objectMapper.writeValueAsString(PizzaDAO.getFinalPrice(Integer.parseInt(id))));
+                    return;
+            } else {
         		res.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 return;
         	}
@@ -186,6 +188,7 @@ public class PizzaRestAPI extends HttpServlet {
         String pizzaFinalModif = objectMapper.writeValueAsString(mergePatch);
         Pizza p = objectMapper.readValue(pizzaFinalModif, Pizza.class);
         PizzaDAO.remove(Integer.parseInt(id));
+        p.setPrix(p.getPrix()+2.0);
         PizzaDAO.save(p);
     }
 

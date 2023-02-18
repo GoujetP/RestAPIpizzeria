@@ -114,6 +114,25 @@ public class PizzaDAO {
             System.out.println("ERREUR \n" + e.getMessage());
         }
     }
+    public static double getFinalPrice(int idP){
+       double price=0.0;
+        try {
+            String query = "select pizza.price,sum(ingredients.price)from pizza INNER JOIN compo ON compo.idP = pizza.id INNER JOIN ingredients ON compo.idI = ingredients.id where idP="+ idP +"group by pizza.price;";
+            DS.getConnection();
+            ResultSet rs = DS.executeQuery(query);
+            DS.closeConnection();
+            while (true) {
+                assert rs != null;
+                if (!rs.next()) break;
+                price=Math.round(rs.getDouble("sum")+rs.getDouble("price"));
+            }
+            System.out.println("All is ok!");
+        } catch (Exception e) {
+            return 0.0;
+        }
+        return price;
+    }
+
 
     public static JsonNode doMergeWithJackson(JsonNode jsonNode1, JsonNode jsonNode2) {
         if (jsonNode1.isObject() && jsonNode2.isObject()) {
