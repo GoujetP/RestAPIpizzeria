@@ -45,7 +45,7 @@ public class PizzaRestAPI extends HttpServlet {
         	if (splits[2].equals("name")) {
         		out.print(objectMapper.writeValueAsString(PizzaDAO.findById(Integer.parseInt(id)).getName()));
         		return;
-        	} else if(splits[2].equals("prixFinal")) {
+        	} else if(splits[2].equals("prixfinal")) {
                     out.print(objectMapper.writeValueAsString(PizzaDAO.getFinalPrice(Integer.parseInt(id))));
                     return;
             } else {

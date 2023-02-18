@@ -36,7 +36,7 @@ INSERT INTO pizza VALUES (6,'pizza Hawaiian',8.0,'Mozza-crust');
 
 CREATE TABLE compo(idP int,idI int,
 foreign key (idP) references pizza(id) on delete cascade,
-foreign key (idI) references ingredients(id) on delete cascade,primary key (idI,idP));
+foreign key (idI) references ingredients(id) on delete cascade,primary key (idP,idI));
 
 
 INSERT INTO compo VALUES (1,1);
