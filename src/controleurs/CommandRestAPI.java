@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 
+import dao.IngredientDAO;
 import dao.OrdersDAO;
 import dto.Orders;
 import jakarta.servlet.ServletException;
@@ -25,24 +26,35 @@ public class CommandRestAPI extends HttpServlet {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         String info = req.getPathInfo();
+        Collection<Orders> models;
         if (info == null || info.equals("/")) {
-            Collection<Orders> models = OrdersDAO.findAll();
+             models= OrdersDAO.findByStatus(false);
             String jsonstring = objectMapper.writeValueAsString(models);
             out.print(jsonstring);
             return;
         }
         String[] splits = info.split("/");
-        if (splits.length != 2 ) {
+        if (splits.length != 2 && splits.length != 3) {
             res.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         String id = splits[1];
-
+        if (splits.length==3) {
+            if (splits[2].equals("prixfinal")) {
+                out.print(objectMapper.writeValueAsString(OrdersDAO.prixfinal(Integer.valueOf(id))));//a modifier mettre map(Pizza,QTY) dans orders
+                return;
+            }
+            else {
+                res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+        }
         if (OrdersDAO.findById(Integer.parseInt(id)) == null  ) {
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-        out.print(objectMapper.writeValueAsString(OrdersDAO.findById(Integer.parseInt(id))));
+        models=OrdersDAO.findById(Integer.parseInt(id));
+        out.print(objectMapper.writeValueAsString(models));
 
 
 

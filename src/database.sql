@@ -83,8 +83,9 @@ insert into users VALUES (2,'mounir','9 rue des mouns','Henin-Beaumont','0781953
 insert into users VALUES (3,'colin','32 avenue jolivet','Cassel','0321546853','colinjolivet@gmail.com');
 
 
-CREATE TABLE orders(orderId int,idU int,idP int,qty int,date date,hours time,finish bool,foreign key (idU) references users(id),foreign key (idP)references pizza(id),primary key (orderId));
+CREATE TABLE orders(orderId int,idU int,idP int,qty int,date date,hours time,finish bool,foreign key (idU) references users(id),foreign key (idP)references pizza(id),primary key (orderId,idP));
 insert into orders VALUES (2,1,2,2,'09/02/2022','12:02:45',true);
+insert into orders VALUES (2,1,3,2,'09/02/2022','12:02:45',true);
 insert into orders VALUES (3,3,5,1,'02/05/2022','11:30:59',false);
 insert into orders VALUES (4,3,3,2,'02/05/2022','11:30:59',false);
 insert into orders VALUES (5,3,1,5,'02/05/2022','11:30:59',false);
@@ -101,8 +102,12 @@ select pizza.price,sum(ingredients.price)from pizza INNER JOIN compo ON compo.id
 group by pizza.price;
 select idI from compo where idP=1;
 Select * from ingredients INNER JOIN compo ON compo.idI = ingredients.id where idP = 1;
-Select Sum(price) from ingredients INNER JOIN compo ON compo.idI = ingredients.id where idP = 1;
+Select p.name,Sum(ingredients.price+p.price) from ingredients INNER JOIN compo ON compo.idI = ingredients.id INNER JOIN pizza p on p.id = compo.idP group by p.name ;
 
 select idU,uC.name,p.name,orders.qty,sum(i.price+p.price),date,finish from orders INNER JOIN pizza p on p.id = orders.idP INNER JOIN users uC on uC.id = orders.idU INNER JOIN compo c on p.id = c.idP INNER JOIN ingredients i on i.id = c.idI
 group by idU,orders.qty,date, p.name, uC.name,finish;
+
+select orderId,sum(i.price+p.price)*qty as total from orders INNER JOIN pizza p on p.id = orders.idP  INNER JOIN compo c on p.id = c.idP INNER JOIN ingredients i on i.id = c.idI where orderId=1
+group by idU,orderId,qty;
+
 Select * from orders where finish = true;
