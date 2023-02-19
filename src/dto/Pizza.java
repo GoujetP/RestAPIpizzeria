@@ -7,24 +7,24 @@ public class Pizza {
 	protected int id;
 	protected String name;
 	protected String pate;
-	protected double prix;
+	protected double price;
 	protected List<Ingredient>compo=new ArrayList<Ingredient>();
 
 	public Pizza(){super();}
-	public Pizza(int id,String name, String pate, double prix,List<Ingredient>compoP) {
+	public Pizza(int id, String name, String pate, double price, List<Ingredient>compoP) {
 		super();
 		this.id=id;
 		this.name = name;
 		this.pate = pate;
-		this.prix = prix;
+		this.price = price;
 		this.compo=compoP;		//this.ingredients = ingredients;
 	}
-	public Pizza(int id,String name, String pate, double prix) {
+	public Pizza(int id,String name, String pate, double price) {
 		super();
 		this.id=id;
 		this.name = name;
 		this.pate = pate;
-		this.prix = prix;
+		this.price = price;
 	}
 	public int getId() {
 		return id;
@@ -50,12 +50,12 @@ public class Pizza {
 		this.pate = pate;
 	}
 
-	public double getPrix() {
-		return prix;
+	public double getPrice() {
+		return price;
 	}
 
-	public void setPrix(double prix) {
-		this.prix = prix;
+	public void setPrice(double price) {
+		this.price = price;
 	}
 
 	public List<Ingredient> getCompo() {

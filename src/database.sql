@@ -2,7 +2,8 @@ DROP TABLE if exists ingredients CASCADE ;
 DROP TABLE if exists pizza CASCADE ;
 DROP TABLE if exists compo CASCADE ;
 DROP TABLE if exists users CASCADE ;
-DROP TABLE if exists commande CASCADE ;
+DROP TABLE if exists orders CASCADE ;
+
 
 CREATE TABLE ingredients(id int, name text,price numeric,primary key (id));
 INSERT INTO ingredients VALUES (1,'creme fraiche',1.2);
@@ -75,22 +76,23 @@ INSERT INTO compo VALUES (6,14);
 INSERT INTO compo VALUES (6,11);
 INSERT INTO compo VALUES (6,9);
 
-CREATE TABLE users(id int,name text,rue text,city text,number varchar(10),email text, primary key (id));
+CREATE TABLE users
+(id int,name text,rue text,city text,number varchar(10),email text,primary key (id));
 insert into users VALUES (1,'pierre',' 10 rue des pierres','pierro-city','0707050351','bestpierro62@gmail.com');
 insert into users VALUES (2,'mounir','9 rue des mouns','mouns-city','0781953385','mounirlemagnifique@gmail.com');
 insert into users VALUES (3,'colin','32 avenue joliver','jojo-ville','0321546853','colinjolivet@gmail.com');
 
 
-CREATE TABLE commande(idU int,idP int,qty int,date timestamp,finish bool,foreign key (idU) references users(id),foreign key (idP)references pizza(id));
-insert into commande VALUES (1,2,2,'09/02/2022 12:02:45',true);
-insert into commande VALUES (3,5,1,'02/05/2022 11:30:59',false);
-insert into commande VALUES (3,3,2,'02/05/2022 11:30:59',false);
-insert into commande VALUES (3,1,5,'02/05/2022 11:30:59',false);
-insert into commande VALUES (1,4,2,'25/12/2022 20:56:12',true);
-insert into commande VALUES (1,3,1,'04/08/2022 18:15:36',true);
-insert into commande VALUES (2,1,1,'25/06/2022 12:30:20',true);
-insert into commande VALUES (2,2,3,'01/01/2022 00:30:25',true);
-insert into commande VALUES (2,4,1,'30/09/2022 12:11:21',true);
+CREATE TABLE orders(orderId int,idU int,idP int,qty int,date timestamp,finish bool,foreign key (idU) references users(id),foreign key (idP)references pizza(id),primary key (orderId));
+insert into orders VALUES (2,1,2,2,'09/02/2022 12:02:45',true);
+insert into orders VALUES (3,3,5,1,'02/05/2022 11:30:59',false);
+insert into orders VALUES (4,3,3,2,'02/05/2022 11:30:59',false);
+insert into orders VALUES (5,3,1,5,'02/05/2022 11:30:59',false);
+insert into orders VALUES (9,1,4,2,'25/12/2022 20:56:12',true);
+insert into orders VALUES (7,1,3,1,'04/08/2022 18:15:36',true);
+insert into orders VALUES (6,2,1,1,'25/06/2022 12:30:20',true);
+insert into orders VALUES (1,2,2,3,'01/01/2022 00:30:25',true);
+insert into orders VALUES (8,2,4,1,'30/09/2022 12:11:21',true);
 
 
 
@@ -101,5 +103,5 @@ select idI from compo where idP=1;
 Select * from ingredients INNER JOIN compo ON compo.idI = ingredients.id where idP = 1;
 Select Sum(price) from ingredients INNER JOIN compo ON compo.idI = ingredients.id where idP = 1;
 
-select idU,uC.name,p.name,commande.qty,sum(i.price+p.price),date,finish from commande INNER JOIN pizza p on p.id = commande.idP INNER JOIN users uC on uC.id = commande.idU INNER JOIN compo c on p.id = c.idP INNER JOIN ingredients i on i.id = c.idI
-group by idU,commande.qty,date, p.name, uC.name,finish;
+select idU,uC.name,p.name,orders.qty,sum(i.price+p.price),date,finish from orders INNER JOIN pizza p on p.id = orders.idP INNER JOIN users uC on uC.id = orders.idU INNER JOIN compo c on p.id = c.idP INNER JOIN ingredients i on i.id = c.idI
+group by idU,orders.qty,date, p.name, uC.name,finish;

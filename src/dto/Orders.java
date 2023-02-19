@@ -2,35 +2,37 @@ package dto;
 
 import java.util.Date;
 
-public class Commande {
-    private User User ;
-    private Pizza Pizza ;
+public class Orders {
+    private int orderId;
+    private User user;
+    private Pizza pizza;
     private int qty ;
     private Date date;
     private boolean finish;
 
-    public Commande(dto.User user, dto.Pizza pizza, int qty, Date date, boolean finish) {
-        User = user;
-        Pizza = pizza;
+    public Orders(int orderId, dto.User user, dto.Pizza pizza, int qty, Date date, boolean finish) {
+        this.orderId=orderId;
+        this.user = user;
+        this.pizza = pizza;
         this.qty = qty;
         this.date = date;
         this.finish = finish;
     }
 
     public dto.User getUser() {
-        return User;
+        return user;
     }
 
     public void setUser(dto.User user) {
-        User = user;
+        this.user = user;
     }
 
     public dto.Pizza getPizza() {
-        return Pizza;
+        return pizza;
     }
 
     public void setPizza(dto.Pizza pizza) {
-        Pizza = pizza;
+        this.pizza = pizza;
     }
 
     public int getQty() {
@@ -57,7 +59,7 @@ public class Commande {
         this.finish = finish;
     }
 
-    public Commande() {
+    public Orders() {
 
     }
 }

@@ -1,21 +1,23 @@
 package dao;
 
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dto.Ingredient;
 import dto.Pizza;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
 public class PizzaDAO {
 	public static Pizza findById(int id) {
         Pizza pizza = new Pizza();
         try {
-            String query = "Select * from pizza where id = " + id + "";
             DS.getConnection();
-            ResultSet rs = DS.executeQuery(query);
+            PreparedStatement stmt=DS.connection.prepareStatement("Select * from pizza where id = ?");
+            stmt.setInt(1,id);
+            ResultSet rs = stmt.executeQuery();
             DS.closeConnection();
             rs.next();
             pizza = new Pizza( rs.getInt("id"),rs.getString("name"),rs.getString("pate"),rs.getDouble("price"),CompoDao.findCompoById(rs.getInt("id")));
@@ -48,14 +50,18 @@ public class PizzaDAO {
 
     public static void save(Pizza pizza){
 		try{
-			String query = "Insert into pizza values("+pizza.getId()+",'"+pizza.getName()+"',"+pizza.getPrix()+",'"+pizza.getPate()+"')";
-			DS.getConnection();
+            DS.getConnection();
+            PreparedStatement stmt= DS.connection.prepareStatement("insert into pizza values(?,?,?,?)");
+            stmt.setInt(1,pizza.getId());
+            stmt.setString(2, pizza.getName());
+            stmt.setDouble(3,pizza.getPrice());
+            stmt.setString(4,pizza.getPate());
             String queryCompo = "";
             for (Ingredient i : pizza.getCompo()){
                 queryCompo = queryCompo +" Insert into compo values("+pizza.getId()+","+i.getId()+");";
 
             }
-			DS.executeUpdate(query);
+			stmt.executeUpdate();
             DS.executeUpdate(queryCompo);
 			DS.closeConnection();
 		} catch(Exception e) {
@@ -65,9 +71,11 @@ public class PizzaDAO {
     public static boolean contient (int idP,int idI){
         int size=0;
         try{
-            String query = "Select count(*) from compo where idP="+idP+"and idI ="+idI+";";
             DS.getConnection();
-			ResultSet rs=DS.executeQuery(query);
+            PreparedStatement stmt=DS.connection.prepareStatement("Select count(*) from compo where idP=? and idi=?");
+            stmt.setInt(1,idP);
+            stmt.setInt(2,idI);
+			ResultSet rs=stmt.executeQuery();
 			DS.closeConnection();
             if (rs != null) 
             {
@@ -84,9 +92,10 @@ public class PizzaDAO {
 
     public static void remove(int id){
 		try{
-			String query = "DELETE from pizza where id="+id;
-			DS.getConnection();
-			DS.executeUpdate(query);
+            DS.getConnection();
+            PreparedStatement stmt=DS.connection.prepareStatement("DELETE from pizza where id= ?");
+            stmt.setInt(1,id);
+			stmt.executeUpdate();
 			DS.closeConnection();
 		} catch(Exception e) {
 			System.out.println("ERREUR \n" + e.getMessage());
@@ -94,10 +103,12 @@ public class PizzaDAO {
 	}
     public static void removeIP(int idP,int idI){
 		try{
-			String query = "DELETE from compo where idP="+idP+"and idI ="+idI+";";
-			DS.getConnection();
-			DS.executeUpdate(query);
-			DS.closeConnection();
+            DS.getConnection();
+            PreparedStatement stmt=DS.connection.prepareStatement("DELETE from compo where idP= ? and idI=?");
+            stmt.setInt(1,idP);
+            stmt.setInt(2,idI);
+            stmt.executeUpdate();
+            DS.closeConnection();
 		} catch(Exception e) {
 			System.out.println("ERREUR \n" + e.getMessage());
 		}
@@ -105,10 +116,11 @@ public class PizzaDAO {
 
     public static void addIngredient(Pizza p ,Ingredient i){
         try{
-
-            String query = "Insert into compo values(" +p.getId()+","+i.getId()+")";
             DS.getConnection();
-            DS.executeUpdate(query);
+            PreparedStatement stmt=DS.connection.prepareStatement("Insert into compo values(?,?)");
+            stmt.setInt(1,p.getId());
+            stmt.setInt(2,i.getId());
+            stmt.executeUpdate();
             DS.closeConnection();
         } catch(Exception e) {
             System.out.println("ERREUR \n" + e.getMessage());
@@ -117,9 +129,10 @@ public class PizzaDAO {
     public static double getFinalPrice(int idP){
        double price=0.0;
         try {
-            String query = "select pizza.price,sum(ingredients.price)from pizza INNER JOIN compo ON compo.idP = pizza.id INNER JOIN ingredients ON compo.idI = ingredients.id where idP="+ idP +"group by pizza.price;";
             DS.getConnection();
-            ResultSet rs = DS.executeQuery(query);
+            PreparedStatement stmt=DS.connection.prepareStatement("select pizza.price,sum(ingredients.price)from pizza INNER JOIN compo ON compo.idP = pizza.id INNER JOIN ingredients ON compo.idI = ingredients.id where idP= ? group by pizza.price;");
+            stmt.setInt(1,idP);
+            ResultSet rs = stmt.executeQuery();
             DS.closeConnection();
             while (true) {
                 assert rs != null;

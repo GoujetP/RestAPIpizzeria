@@ -188,7 +188,7 @@ public class PizzaRestAPI extends HttpServlet {
         String pizzaFinalModif = objectMapper.writeValueAsString(mergePatch);
         Pizza p = objectMapper.readValue(pizzaFinalModif, Pizza.class);
         PizzaDAO.remove(Integer.parseInt(id));
-        p.setPrix(p.getPrix()+2.0);
+        p.setPrice(p.getPrice()+2.0);
         PizzaDAO.save(p);
     }
 

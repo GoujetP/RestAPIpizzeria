@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,9 +12,10 @@ public class IngredientDAO {
     public static Ingredient findById(int id) {
         Ingredient ingredient = new Ingredient();
         try {
-            String query = "Select * from ingredients where id = " + id + "";
             DS.getConnection();
-            ResultSet rs = DS.executeQuery(query);
+            PreparedStatement stmt=DS.connection.prepareStatement("Select * from ingredients where id = ?");
+            stmt.setInt(1,id);
+            ResultSet rs = stmt.executeQuery();
             DS.closeConnection();
             rs.next();
             ingredient = new Ingredient(rs.getInt("id"), rs.getString("name"),rs.getDouble("price"));
@@ -45,9 +47,12 @@ public class IngredientDAO {
 
     public static void save(Ingredient ingredient){
 		try{
-			String query = "Insert into ingredients values("+ingredient.getId()+",'"+ingredient.getName()+"',"+ingredient.getPrice()+")";
-			DS.getConnection();
-			DS.executeUpdate(query);
+            DS.getConnection();
+            PreparedStatement stmt= DS.connection.prepareStatement("insert into ingredients values(?,?,?)");
+            stmt.setInt(1,ingredient.getId());
+            stmt.setString(2, ingredient.getName());
+            stmt.setDouble(3,ingredient.getPrice());
+			stmt.executeUpdate();
 			DS.closeConnection();
 		} catch(Exception e) {
 			System.out.println("ERREUR \n" + e.getMessage());
@@ -56,10 +61,11 @@ public class IngredientDAO {
     
     public static void remove(int id){
 		try{
-			String query = "DELETE from ingredients where id="+id;
-			DS.getConnection();
-			DS.executeUpdate(query);
-			DS.closeConnection();
+            DS.getConnection();
+            PreparedStatement stmt=DS.connection.prepareStatement("DELETE from ingredients where id= ?");
+            stmt.setInt(1,id);
+            stmt.executeUpdate();
+            DS.closeConnection();
 		} catch(Exception e) {
 			System.out.println("ERREUR \n" + e.getMessage());
 		}

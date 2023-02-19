@@ -4,6 +4,7 @@ import dto.Ingredient;
 import dto.Pizza;
 import dto.User;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +13,10 @@ public class UserDAO {
     public static User findById(int id) {
         User user = new User();
         try {
-            String query = "Select * from users where id = " + id + "";
             DS.getConnection();
-            ResultSet rs = DS.executeQuery(query);
+            PreparedStatement stmt=DS.connection.prepareStatement("Select * from userc where id = ?");
+            stmt.setInt(1,id);
+            ResultSet rs = stmt.executeQuery();
             DS.closeConnection();
             rs.next();
             user = new User(rs.getInt("id"), rs.getString("name"), ("" + rs.getString("rue") + "" + rs.getString("city")), rs.getString("number"), rs.getString("email"));
@@ -46,9 +48,15 @@ public class UserDAO {
 
     public static void save(User user) {
         try {
-            String query = "Insert into users values(" + user.getId() + ",'" + user.getName() + "'," + user.getAdresse() + ",'" + user.getNumber() + ",'"+user.getMail() +"')";
             DS.getConnection();
-            DS.executeUpdate(query);
+            PreparedStatement stmt= DS.connection.prepareStatement("insert into userc values(?,?,?,?,?,?)");
+            stmt.setInt(1,user.getId());
+            stmt.setString(2, user.getName());
+            stmt.setString(3,user.getAdresse());
+            stmt.setString(4,user.getAdresse());
+            stmt.setString(5,user.getNumber());
+            stmt.setString(6,user.getMail());
+            stmt.executeUpdate();
             DS.closeConnection();
         } catch (Exception e) {
             System.out.println("ERREUR \n" + e.getMessage());
