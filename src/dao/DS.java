@@ -17,7 +17,7 @@ public  class DS {
             String url = "jdbc:postgresql://psqlserv:5432/but2";
             String login = "mounirkhatrietu";
             String mdp = "moi";
-            String urlM ="jdbc:postgresql://localhost:5432/but2";
+            String urlM ="jdbc:postgresql://localhost:5432/postgres";
             String loginM ="postgres";
             String mdpM = "root";
             Connection con = DriverManager.getConnection(urlM,loginM,mdpM);
