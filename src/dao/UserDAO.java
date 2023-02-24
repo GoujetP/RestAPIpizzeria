@@ -26,6 +26,23 @@ public class UserDAO {
         }
         return user;
     }
+    public static int connect(String username,String password){
+        int present =0;
+        try {
+            DS.getConnection();
+            PreparedStatement stmt=DS.connection.prepareStatement("Select id from users where username = ? and password = ?");
+            stmt.setString(1,username);
+            stmt.setString(2,password);
+            ResultSet rs = stmt.executeQuery();
+            DS.closeConnection();
+            rs.next();
+            present=rs.getInt("idU");
+            System.out.println("All is ok!");
+        } catch (Exception e) {
+            return 0;
+        }
+        return present;
+    }
 
     public static List<User> findAll() {
         List<User> users = new ArrayList<>();

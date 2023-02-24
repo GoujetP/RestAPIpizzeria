@@ -3,7 +3,7 @@ DROP TABLE if exists pizza CASCADE ;
 DROP TABLE if exists compo CASCADE ;
 DROP TABLE if exists users CASCADE ;
 DROP TABLE if exists orders CASCADE ;
-
+DROP TABLE if exists identification CASCADE ;
 
 CREATE TABLE ingredients(id int, name text,price numeric,primary key (id));
 INSERT INTO ingredients VALUES (1,'creme fraiche',1.2);
@@ -77,10 +77,12 @@ INSERT INTO compo VALUES (6,11);
 INSERT INTO compo VALUES (6,9);
 
 CREATE TABLE users
-(id int,name text,rue text,city text,number varchar(10),email text,primary key (id));
-insert into users VALUES (1,'pierre',' 10 rue des pierres','Lille','0707050351','bestpierro62@gmail.com');
-insert into users VALUES (2,'mounir','9 rue des mouns','Henin-Beaumont','0781953385','mounirlemagnifique@gmail.com');
-insert into users VALUES (3,'colin','32 avenue jolivet','Cassel','0321546853','colinjolivet@gmail.com');
+(id int,username text,password text,name text,rue text,city text,number varchar(10),email text,token text,primary key (id));
+insert into users VALUES (1,'bestpierro59','cambraizoo','pierre',' 10 rue des pierres','Lille','0707050351','bestpierro62@gmail.com');
+insert into users VALUES (2,'bgdu62','moi','mounir','9 rue des mouns','Henin-Beaumont','0781953385','mounirlemagnifique@gmail.com');
+insert into users VALUES (3,'colin','LOL','colin','32 avenue jolivet','Cassel','0321546853','colinjolivet@gmail.com');
+
+
 
 
 CREATE TABLE orders(orderId int,idU int,idP int,qty int,date date,hours time,finish bool,foreign key (idU) references users(id),foreign key (idP)references pizza(id),primary key (orderId,idP));
