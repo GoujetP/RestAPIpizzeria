@@ -14,12 +14,12 @@ public class UserDAO {
         User user = new User();
         try {
             DS.getConnection();
-            PreparedStatement stmt=DS.connection.prepareStatement("Select * from userc where id = ?");
+            PreparedStatement stmt=DS.connection.prepareStatement("Select * from users where id = ?");
             stmt.setInt(1,id);
             ResultSet rs = stmt.executeQuery();
             DS.closeConnection();
             rs.next();
-            user = new User(rs.getInt("id"), rs.getString("name"), ("" + rs.getString("rue") + "" + rs.getString("city")), rs.getString("number"), rs.getString("email"));
+            user = new User(rs.getInt("id"), rs.getString("name"), ("" + rs.getString("rue") + " " + rs.getString("city")), rs.getString("number"), rs.getString("email"));
             System.out.println("All is ok!");
         } catch (Exception e) {
             return null;
@@ -36,7 +36,7 @@ public class UserDAO {
             DS.closeConnection();
             while (rs.next()) {
 
-                users.add(new User(rs.getInt("id"), rs.getString("name"), ("" + rs.getString("rue") + "" + rs.getString("city")), rs.getString("number"), rs.getString("email")));
+                users.add(new User(rs.getInt("id"), rs.getString("name"), ("" + rs.getString("rue") + " " + rs.getString("city")), rs.getString("number"), rs.getString("email")));
 
             }
             System.out.println("All is ok!");
@@ -49,7 +49,7 @@ public class UserDAO {
     public static void save(User user) {
         try {
             DS.getConnection();
-            PreparedStatement stmt= DS.connection.prepareStatement("insert into userc values(?,?,?,?,?,?)");
+            PreparedStatement stmt= DS.connection.prepareStatement("insert into users values(?,?,?,?,?,?)");
             stmt.setInt(1,user.getId());
             stmt.setString(2, user.getName());
             stmt.setString(3,user.getAdresse());
