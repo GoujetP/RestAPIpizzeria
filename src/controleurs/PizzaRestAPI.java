@@ -31,7 +31,7 @@ public class PizzaRestAPI extends HttpServlet {
         ObjectMapper objectMapper = new ObjectMapper();
         String info = req.getPathInfo();
         String token = req.getParameter("token");
-        if (token.equals(null) || !UserDAO.checkToken(token)) {
+        if (token==null || !UserDAO.checkToken(token)) {
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
@@ -84,7 +84,7 @@ public class PizzaRestAPI extends HttpServlet {
         BufferedReader reader = req.getReader();
         String line ="";
         String token = req.getParameter("token");
-        if (token.equals(null) || !UserDAO.checkToken(token)) {
+        if (token==null || !UserDAO.checkToken(token)) {
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
@@ -132,7 +132,7 @@ public class PizzaRestAPI extends HttpServlet {
 
         String info = req.getPathInfo();
         String token = req.getParameter("token");
-        if (token.equals(null) || !UserDAO.checkToken(token)) {
+        if (token==null || !UserDAO.checkToken(token)) {
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
@@ -186,7 +186,7 @@ public class PizzaRestAPI extends HttpServlet {
         res.setContentType("application/json;charset=UTF-8");
         PrintWriter out = res.getWriter();
         String token = req.getParameter("token");
-        if (token.equals(null) || !UserDAO.checkToken(token)) {
+        if (token==null || !UserDAO.checkToken(token)) {
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
