@@ -14,8 +14,22 @@ import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-@WebServlet("/token/*")
+@WebServlet("/token")
 public class GenererToken extends HttpServlet {
+
+    public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        res.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = res.getWriter();
+        String username = req.getParameter("login");
+        String password = req.getParameter("password");
+        int userid=UserDAO.connect(username,password);
+        if(userid!=0){
+            out.println(genereTOKEN(userid));
+        }else{
+            out.println(""+userid+" "+username+" "+password);
+        };
+    }
+
     public String genereTOKEN(int idU){
         String token=java.util.UUID.randomUUID().toString();
         try {
@@ -31,18 +45,5 @@ public class GenererToken extends HttpServlet {
             return "users inconnu";
         }
             return token;
-    }
-
-    public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        res.setContentType("application/json;charset=UTF-8");
-        PrintWriter out = res.getWriter();
-        String username = req.getParameter("login");
-        String password = req.getParameter("password");
-        int userid=UserDAO.connect(username,password);
-        if(userid!=0){
-            out.println(genereTOKEN(userid));
-        }else{
-            out.println("inconnu");
-        };
     }
 }

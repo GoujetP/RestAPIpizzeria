@@ -15,6 +15,7 @@ import java.util.TreeMap;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.IngredientDAO;
+import dao.UserDAO;
 import dto.Ingredient;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -34,6 +35,11 @@ public class IngredientRestAPI extends HttpServlet {
         PrintWriter out = res.getWriter();
         ObjectMapper objectMapper = new ObjectMapper();
         String info = req.getPathInfo();
+        String token = req.getParameter("token");
+        if (token.equals(null) || !UserDAO.checkToken(token)) {
+            res.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
         if (info == null || info.equals("/")) {
             Collection<Ingredient> models = IngredientDAO.findAll();
             String jsonstring = objectMapper.writeValueAsString(models);
@@ -77,6 +83,11 @@ public class IngredientRestAPI extends HttpServlet {
         StringBuilder data = new StringBuilder();
         BufferedReader reader = req.getReader();
         String line;
+        String token = req.getParameter("token");
+        if (token.equals(null) || !UserDAO.checkToken(token)) {
+            res.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
         while ((line = reader.readLine()) != null) {
         	data.append(line);
         }
@@ -95,6 +106,11 @@ public class IngredientRestAPI extends HttpServlet {
         PrintWriter out = res.getWriter();
         ObjectMapper objectMapper = new ObjectMapper();
         String info = req.getPathInfo();
+        String token = req.getParameter("token");
+        if (token.equals(null) || !UserDAO.checkToken(token)) {
+            res.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
         if (info == null || info.equals("/")) {
         	res.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;

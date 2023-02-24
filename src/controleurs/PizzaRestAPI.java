@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.IngredientDAO;
 import dao.PizzaDAO;
+import dao.UserDAO;
 import dto.Ingredient;
 import dto.Pizza;
 import jakarta.servlet.ServletException;
@@ -21,14 +22,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/pizzas/*")
 public class PizzaRestAPI extends HttpServlet {
-	
-	
-	
+
+
+
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         res.setContentType("application/json;charset=UTF-8");
         PrintWriter out = res.getWriter();
         ObjectMapper objectMapper = new ObjectMapper();
         String info = req.getPathInfo();
+        String token = req.getParameter("token");
+        if (token.equals(null) || !UserDAO.checkToken(token)) {
+            res.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
         if (info == null || info.equals("/")) {
             Collection<Pizza> models = PizzaDAO.findAll();
             String jsonstring = objectMapper.writeValueAsString(models);
@@ -54,20 +60,20 @@ public class PizzaRestAPI extends HttpServlet {
         	}
         }
 
-        
+
         if (PizzaDAO.findById(Integer.parseInt(id)) == null  ) {
         	res.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
         out.print(objectMapper.writeValueAsString(PizzaDAO.findById(Integer.parseInt(id))));
-        
-        
-        
-        
+
+
+
+
         return;
     }
-	
-	
+
+
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String info = req.getPathInfo();
 
@@ -77,6 +83,11 @@ public class PizzaRestAPI extends HttpServlet {
         StringBuilder data = new StringBuilder();
         BufferedReader reader = req.getReader();
         String line ="";
+        String token = req.getParameter("token");
+        if (token.equals(null) || !UserDAO.checkToken(token)) {
+            res.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
         if (info == null || info.equals("/")) {
             while ((line = reader.readLine()) != null) {
                 data.append(line);
@@ -120,6 +131,11 @@ public class PizzaRestAPI extends HttpServlet {
         res.setContentType("application/json;charset=UTF-8");
 
         String info = req.getPathInfo();
+        String token = req.getParameter("token");
+        if (token.equals(null) || !UserDAO.checkToken(token)) {
+            res.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
         if (info == null || info.equals("/")) {
         	res.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
@@ -129,7 +145,7 @@ public class PizzaRestAPI extends HttpServlet {
             res.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        
+
         String idP = splits[1];
 
         if (PizzaDAO.findById(Integer.parseInt(idP)) == null) {
@@ -169,7 +185,11 @@ public class PizzaRestAPI extends HttpServlet {
         ObjectMapper objectMapper = new ObjectMapper();
         res.setContentType("application/json;charset=UTF-8");
         PrintWriter out = res.getWriter();
-
+        String token = req.getParameter("token");
+        if (token.equals(null) || !UserDAO.checkToken(token)) {
+            res.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
         String[] splits = info.split("/");
         if (splits.length != 2 ) {
             res.sendError(HttpServletResponse.SC_BAD_REQUEST);

@@ -112,4 +112,4 @@ group by idU,orders.qty,date, p.name, uC.name,finish;
 select orderId,sum(i.price+p.price)*qty as total from orders INNER JOIN pizza p on p.id = orders.idP  INNER JOIN compo c on p.id = c.idP INNER JOIN ingredients i on i.id = c.idI where orderId=1
 group by idU,orderId,qty;
 
-Select * from orders where finish = true;
+Select id,token from users ;

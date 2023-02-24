@@ -7,7 +7,9 @@ import dto.User;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UserDAO {
     public static User findById(int id) {
@@ -30,18 +32,52 @@ public class UserDAO {
         int present =0;
         try {
             DS.getConnection();
-            PreparedStatement stmt=DS.connection.prepareStatement("Select id from users where username = ? and password = ?");
+            PreparedStatement stmt=DS.connection.prepareStatement("Select id from users where username=? and password=?;");
             stmt.setString(1,username);
             stmt.setString(2,password);
             ResultSet rs = stmt.executeQuery();
             DS.closeConnection();
             rs.next();
-            present=rs.getInt("idU");
+            present=rs.getInt("id");
             System.out.println("All is ok!");
         } catch (Exception e) {
             return 0;
         }
         return present;
+    }
+
+    public static boolean checkToken(String token){
+        boolean check=false;
+        try {
+        DS.getConnection();
+        PreparedStatement stmt=DS.connection.prepareStatement("Select token from users where token=? ;");
+        stmt.setString(1,token);
+
+        ResultSet rs = stmt.executeQuery();
+        DS.closeConnection();
+        check=rs.next();
+        System.out.println("All is ok!");
+    } catch (Exception e) {
+        return false;
+    }
+        return check;
+}
+    public static Map<Integer,String> findAllToken() {
+        Map<Integer,String> tokens = new HashMap<Integer,String>();
+        try {
+            String query = "select id,token from users ;";
+            DS.getConnection();
+            ResultSet rs = DS.executeQuery(query);
+            DS.closeConnection();
+            while (rs.next()) {
+                tokens.put(rs.getInt("id"), rs.getString("token"));
+
+            }
+            System.out.println("All is ok!");
+        } catch (Exception e) {
+            System.out.println("ERREUR \n" + e.getMessage());
+        }
+        return tokens;
     }
 
     public static List<User> findAll() {

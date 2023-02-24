@@ -9,6 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import dao.IngredientDAO;
 import dao.OrdersDAO;
+import dao.UserDAO;
 import dto.Orders;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -23,42 +24,46 @@ public class CommandRestAPI extends HttpServlet {
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         res.setContentType("application/json;charset=UTF-8");
         PrintWriter out = res.getWriter();
+
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         String info = req.getPathInfo();
-        Collection<Orders> models;
-        if (info == null || info.equals("/")) {
-             models= OrdersDAO.findByStatus(false);
-            String jsonstring = objectMapper.writeValueAsString(models);
-            out.print(jsonstring);
+        String token = req.getParameter("token");
+        if (token.equals(null) || !UserDAO.checkToken(token)) {
+            res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
-        }
-        String[] splits = info.split("/");
-        if (splits.length != 2 && splits.length != 3) {
-            res.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-        String id = splits[1];
-        if (splits.length==3) {
-            if (splits[2].equals("prixfinal")) {
-                out.print(objectMapper.writeValueAsString(OrdersDAO.prixfinal(Integer.valueOf(id))));//a modifier mettre map(Pizza,QTY) dans orders
+        } else {
+            Collection<Orders> models;
+            if (info == null || info.equals("/")) {
+                models = OrdersDAO.findByStatus(false);
+                String jsonstring = objectMapper.writeValueAsString(models);
+                out.print(jsonstring);
                 return;
             }
-            else {
+            String[] splits = info.split("/");
+            if (splits.length != 2 && splits.length != 3) {
                 res.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
-        }
-        if (OrdersDAO.findById(Integer.parseInt(id)) == null  ) {
-            res.sendError(HttpServletResponse.SC_NOT_FOUND);
+            String id = splits[1];
+            if (splits.length == 3) {
+                if (splits[2].equals("prixfinal")) {
+                    out.print(objectMapper.writeValueAsString(OrdersDAO.prixfinal(Integer.valueOf(id))));//a modifier mettre map(Pizza,QTY) dans orders
+                    return;
+                } else {
+                    res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                    return;
+                }
+            }
+            if (OrdersDAO.findById(Integer.parseInt(id)) == null) {
+                res.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+            models = OrdersDAO.findById(Integer.parseInt(id));
+            out.print(objectMapper.writeValueAsString(models));
+
+
             return;
         }
-        models=OrdersDAO.findById(Integer.parseInt(id));
-        out.print(objectMapper.writeValueAsString(models));
-
-
-
-
-        return;
     }
 }
