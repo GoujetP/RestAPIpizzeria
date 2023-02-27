@@ -3,6 +3,7 @@ package dao;
 import dto.Ingredient;
 import dto.Pizza;
 import dto.User;
+import io.jsonwebtoken.Claims;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class UserDAO {
     public static User findById(int id) {
@@ -28,8 +31,8 @@ public class UserDAO {
         }
         return user;
     }
-    public static int connect(String username,String password){
-        int present =0;
+    public static boolean connect(String username,String password){
+        boolean present =false;
         try {
             DS.getConnection();
             PreparedStatement stmt=DS.connection.prepareStatement("Select id from users where username=? and password=?;");
@@ -37,22 +40,48 @@ public class UserDAO {
             stmt.setString(2,password);
             ResultSet rs = stmt.executeQuery();
             DS.closeConnection();
-            rs.next();
-            present=rs.getInt("id");
+            present=rs.next();
             System.out.println("All is ok!");
+            return present;
         } catch (Exception e) {
-            return 0;
+            return false;
         }
-        return present;
+        
     }
+    public static boolean checkTokenJWT(String token){
+        boolean check=false;
+        ObjectMapper mapper = new ObjectMapper();
+        String JWTsplit[]=token.split(".");
+        String password;
+        try {
+
+            Claims username = controleurs.JwtManager.decodeJWT(token,password);
+            
+            DS.getConnection();
+        PreparedStatement stmt=DS.connection.prepareStatement("Select password from users where username=?;");
+        stmt.setString(1,username.getIssuer());
+
+        ResultSet rs = stmt.executeQuery();
+        DS.closeConnection();
+        if(rs.next()){
+            password=rs.getString("password");
+        };
+        System.out.println("All is ok!");
+            
+    } catch (Exception e) {
+        return false;
+    }
+        return check;
+}
 
     public static boolean checkToken(String token){
         boolean check=false;
+        String login[]=java.util.Base64.getDecoder().decode(token).toString().split(":");
         try {
         DS.getConnection();
-        PreparedStatement stmt=DS.connection.prepareStatement("Select token from users where token=? ;");
-        stmt.setString(1,token);
-
+        PreparedStatement stmt=DS.connection.prepareStatement("Select name from users where username=?,password=? ;");
+        stmt.setString(1,login[0]);
+        stmt.setString(2, login[1]);
         ResultSet rs = stmt.executeQuery();
         DS.closeConnection();
         check=rs.next();
