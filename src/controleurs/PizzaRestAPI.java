@@ -33,6 +33,7 @@ public class PizzaRestAPI extends HttpServlet {
         String token = req.getParameter("token");
         if (token==null || !UserDAO.checkToken(token)) {
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
+
             return;
         }
         if (info == null || info.equals("/")) {

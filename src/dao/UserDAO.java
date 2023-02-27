@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import controleurs.JwtManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class UserDAO {
@@ -48,24 +48,21 @@ public class UserDAO {
         }
         
     }
-    public static boolean checkTokenJWT(String token){
+    public static boolean checkToken(String token){
         boolean check=false;
-        ObjectMapper mapper = new ObjectMapper();
-        String JWTsplit[]=token.split(".");
-        String password;
+        String username=JwtManager.tokenUsername(token);
+        String password = null;
         try {
-
-            Claims username = controleurs.JwtManager.decodeJWT(token,password);
-            
             DS.getConnection();
-        PreparedStatement stmt=DS.connection.prepareStatement("Select password from users where username=?;");
-        stmt.setString(1,username.getIssuer());
-
+        PreparedStatement stmt=DS.connection.prepareStatement("Select password from users where username= ? ;");
+        stmt.setString(1,username);
         ResultSet rs = stmt.executeQuery();
         DS.closeConnection();
         if(rs.next()){
             password=rs.getString("password");
         };
+        JwtManager.decodeJWT(token,password);//pour check la validité
+        check=JwtManager.createJWT(username,password).equals(token);
         System.out.println("All is ok!");
             
     } catch (Exception e) {
@@ -74,23 +71,7 @@ public class UserDAO {
         return check;
 }
 
-    public static boolean checkToken(String token){
-        boolean check=false;
-        String login[]=java.util.Base64.getDecoder().decode(token).toString().split(":");
-        try {
-        DS.getConnection();
-        PreparedStatement stmt=DS.connection.prepareStatement("Select name from users where username=?,password=? ;");
-        stmt.setString(1,login[0]);
-        stmt.setString(2, login[1]);
-        ResultSet rs = stmt.executeQuery();
-        DS.closeConnection();
-        check=rs.next();
-        System.out.println("All is ok!");
-    } catch (Exception e) {
-        return false;
-    }
-        return check;
-}
+
     public static Map<Integer,String> findAllToken() {
         Map<Integer,String> tokens = new HashMap<Integer,String>();
         try {

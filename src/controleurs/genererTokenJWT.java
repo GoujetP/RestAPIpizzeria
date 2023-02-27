@@ -3,11 +3,15 @@ package controleurs;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import dao.UserDAO;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class genererTokenJWT {
+@WebServlet("/tokenjwt")
+public class genererTokenJWT extends HttpServlet {
     
     
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -17,15 +21,15 @@ public class genererTokenJWT {
         String password = req.getParameter("password");
         
         if(UserDAO.connect(username, password)){
-            out.println(genereTOKEN64(username,password));
+            out.println(genererTokenJwt(username,password));
         }else{
             out.println("false"+" "+username+" "+password);
         };
     }
-    public String genereTOKEN64(String login,String password){
+    public static String genererTokenJwt(String login, String password){
         
         try {
-           String token=JwtManager.createJWT();
+           String token=JwtManager.createJWT(login,password);
            
             System.out.println("All is ok!");
             return token;
@@ -35,5 +39,7 @@ public class genererTokenJWT {
         }
             
     }
+
+
     
 }
