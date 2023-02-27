@@ -30,10 +30,14 @@ public class PizzaRestAPI extends HttpServlet {
         PrintWriter out = res.getWriter();
         ObjectMapper objectMapper = new ObjectMapper();
         String info = req.getPathInfo();
-        String token = req.getParameter("token");
+        String authorization = req.getHeader("Authorization");
+        if (authorization == null || !authorization.startsWith("Basic")){
+            res.sendError(999);
+            return;
+        }
+        String token = authorization.substring("Basic".length()).trim();
         if (token==null || !UserDAO.checkToken(token)) {
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
-
             return;
         }
         if (info == null || info.equals("/")) {
@@ -84,7 +88,12 @@ public class PizzaRestAPI extends HttpServlet {
         StringBuilder data = new StringBuilder();
         BufferedReader reader = req.getReader();
         String line ="";
-        String token = req.getParameter("token");
+        String authorization = req.getHeader("Authorization");
+        if (authorization == null || !authorization.startsWith("Basic")){
+            res.sendError(999);
+            return;
+        }
+        String token = authorization.substring("Basic".length()).trim();
         if (token==null || !UserDAO.checkToken(token)) {
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
@@ -132,7 +141,12 @@ public class PizzaRestAPI extends HttpServlet {
         res.setContentType("application/json;charset=UTF-8");
 
         String info = req.getPathInfo();
-        String token = req.getParameter("token");
+        String authorization = req.getHeader("Authorization");
+        if (authorization == null || !authorization.startsWith("Basic")){
+            res.sendError(999);
+            return;
+        }
+        String token = authorization.substring("Basic".length()).trim();
         if (token==null || !UserDAO.checkToken(token)) {
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
@@ -186,7 +200,12 @@ public class PizzaRestAPI extends HttpServlet {
         ObjectMapper objectMapper = new ObjectMapper();
         res.setContentType("application/json;charset=UTF-8");
         PrintWriter out = res.getWriter();
-        String token = req.getParameter("token");
+        String authorization = req.getHeader("Authorization");
+        if (authorization == null || !authorization.startsWith("Basic")){
+            res.sendError(999);
+            return;
+        }
+        String token = authorization.substring("Basic".length()).trim();
         if (token==null || !UserDAO.checkToken(token)) {
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;

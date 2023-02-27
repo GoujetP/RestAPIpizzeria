@@ -25,7 +25,12 @@ public class TokenAPI extends HttpServlet{
             PrintWriter out = res.getWriter();
             ObjectMapper objectMapper = new ObjectMapper();
             String info = req.getPathInfo();
-            String token = req.getParameter("token");
+            String authorization = req.getHeader("Authorization");
+            if (authorization == null || !authorization.startsWith("Basic")){
+                res.sendError(999);
+                return;
+            }
+            String token = authorization.substring("Basic".length()).trim();
             if (token==null || !UserDAO.checkToken(token)) {
                 res.sendError(HttpServletResponse.SC_FORBIDDEN);
                 return;

@@ -28,10 +28,16 @@ public class CommandRestAPI extends HttpServlet {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         String info = req.getPathInfo();
-        String token = req.getParameter("token");
+        String authorization = req.getHeader("Authorization");
+        if (authorization == null || !authorization.startsWith("Basic")){
+            res.sendError(999);
+            return;
+        }
+        String token = authorization.substring("Basic".length()).trim();
         if (token==null || !UserDAO.checkToken(token)) {
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
+
         } else {
             Collection<Orders> models;
             if (info == null || info.equals("/")) {
