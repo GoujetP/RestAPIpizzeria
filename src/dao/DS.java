@@ -14,13 +14,13 @@ public  class DS {
         try {
 
             Class.forName("org.postgresql.Driver");
-            String url = "jdbc:postgresql://psqlserv:5432/but2";
+            String url = "jdbc:postgresql://localhost:5432/but2";
             String login = "mounirkhatrietu";
             String mdp = "moi";
             String urlM ="jdbc:postgresql://localhost:5432/SAE";
             String loginM ="pierre";
             String mdpM = "moi";
-            Connection con = DriverManager.getConnection(urlM,loginM,mdpM);
+            Connection con = DriverManager.getConnection(url,login,mdp);
             DS.connection = con;
         } catch(Exception e) {
             e.printStackTrace();
