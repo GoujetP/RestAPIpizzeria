@@ -13,6 +13,7 @@ public class Orders {
     private LocalTime hours;
     private boolean finish;
 
+
     public Orders(int orderId, dto.User user, dto.Pizza pizza, int qty, LocalDate date,LocalTime hours, boolean finish) {
         this.orderId=orderId;
         this.user = user;
@@ -22,6 +23,8 @@ public class Orders {
         this.date = date;
         this.finish = finish;
     }
+
+
 
     public int getOrderId() {
         return orderId;

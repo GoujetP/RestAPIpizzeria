@@ -1,5 +1,6 @@
 package dao;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import dto.Orders;
 
 import java.sql.*;
@@ -88,5 +89,48 @@ public class OrdersDAO {
             return rslt;
         }
         return rslt;
+    }
+
+    public static int getUserId(JsonNode node) {
+        return node
+                .get("idu")
+                .asInt();
+    }
+
+    public static int getPizzaId(JsonNode node) {
+        return node
+                .get("idp")
+                .asInt();
+    }
+
+    public static int getOrderId(JsonNode node){
+        return node
+                .get("orderId")
+                .asInt();
+    }
+
+    public static int getQty(JsonNode node){
+        return node
+                .get("qty")
+                .asInt();
+    }
+
+    public static String getDate(JsonNode node){
+        return String.valueOf(node
+                .get("date")).substring(1,String.valueOf(node
+                .get("date")).length()-1);
+    }
+
+
+    public static String getHours(JsonNode node){
+        return String.valueOf(node
+                .get("hours")).substring(1,String.valueOf(node
+                .get("hours")).length()-1);
+    }
+
+    public static boolean getFinish(JsonNode node){
+        return node
+                .get("finish")
+                .asBoolean();
     }
 }

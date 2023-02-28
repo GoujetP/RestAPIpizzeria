@@ -2,17 +2,15 @@
 // lui-même inspiré par : https://www.baeldung.com/java-json-web-tokens-jjwt
 // et sinon la doc : https://github.com/jwtk/jjwt/blob/master/README.md
 package controleurs;
+
+import com.google.common.hash.Hashing;
+import io.jsonwebtoken.*;
+
+import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
-import java.util.UUID;
-
-import javax.crypto.spec.SecretKeySpec;
-
-import com.google.common.hash.Hashing;
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.SignatureException;
 
 public class JwtManager {
     // pour SHA256 : 256 bits mini
