@@ -14,9 +14,9 @@ public  class DS {
         try {
 
             Class.forName("org.postgresql.Driver");
-            String url = "jdbc:postgresql://localhost:5432/but2";
-            String login = "mounirkhatrietu";
-            String mdp = "moi";
+            String url = "jdbc:postgresql://localhost:5432/postgres";
+            String login = "postgres";
+            String mdp = "root";
             String urlM ="jdbc:postgresql://localhost:5432/SAE";
             String loginM ="pierre";
             String mdpM = "moi";

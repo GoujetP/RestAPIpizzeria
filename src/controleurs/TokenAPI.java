@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
-@WebServlet("/users/*")
+@WebServlet("/efface/*")
 public class TokenAPI extends HttpServlet{
 
 
@@ -25,16 +25,8 @@ public class TokenAPI extends HttpServlet{
             PrintWriter out = res.getWriter();
             ObjectMapper objectMapper = new ObjectMapper();
             String info = req.getPathInfo();
-            String authorization = req.getHeader("Authorization");
-            if (authorization == null || !authorization.startsWith("Basic")){
-                res.sendError(999);
-                return;
-            }
-            String token = authorization.substring("Basic".length()).trim();
-            if (token==null || !UserDAO.checkToken(token)) {
-                res.sendError(HttpServletResponse.SC_FORBIDDEN);
-                return;
-            }
+            String usr=req.getParameter("usr");
+            String password=req.getParameter("login");
             if (info == null || info.equals("/")) {
                 Collection<User> models = UserDAO.findAll();
                 String jsonstring = objectMapper.writeValueAsString(models);
@@ -49,7 +41,7 @@ public class TokenAPI extends HttpServlet{
             String id = splits[1];
 
             if (id.equals("token")) {
-                out.print(objectMapper.writeValueAsString(UserDAO.findAllToken()));
+
                 return;
             } else {
                 res.sendError(HttpServletResponse.SC_BAD_REQUEST);
