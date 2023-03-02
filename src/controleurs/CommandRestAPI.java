@@ -4,17 +4,18 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 
-import dao.IngredientDAO;
-import dao.OrdersDAO;
-import dao.PizzaDAO;
-import dao.UserDAO;
+import dao.*;
+import dto.Ingredient;
 import dto.Orders;
 import dto.Pizza;
 import dto.User;
@@ -108,12 +109,11 @@ public class CommandRestAPI extends HttpServlet {
             boolean finish = OrdersDAO.getFinish(nodeOrder);
             String dateString = OrdersDAO.getDate(nodeOrder);
             String hoursString=OrdersDAO.getHours(nodeOrder);
-            System.out.println((dateString));
-            System.out.println((hoursString));
             int userid = OrdersDAO.getUserId(nodeOrder);
-            int pizzaid = OrdersDAO.getPizzaId(nodeOrder);
             User user = UserDAO.findById(userid);
-            Pizza pizza = PizzaDAO.findById(pizzaid);
+            List<Pizza> pizza = OrdersDAO.getListPizza(nodeOrder);
+
+
             Orders order = new Orders(orderid,user,pizza,qty, LocalDate.parse(dateString), LocalTime.parse(hoursString),finish);
             OrdersDAO.save(order);
         }

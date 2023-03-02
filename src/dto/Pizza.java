@@ -26,6 +26,8 @@ public class Pizza {
 		this.pate = pate;
 		this.price = price;
 	}
+
+
 	public int getId() {
 		return id;
 	}
@@ -79,6 +81,15 @@ public class Pizza {
 	*
 	*
 	*/
-	
-	
+
+	@Override
+	public String toString() {
+		return "Pizza{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", pate='" + pate + '\'' +
+				", price=" + price +
+				", compo=" + compo +
+				'}';
+	}
 }

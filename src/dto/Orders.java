@@ -3,18 +3,19 @@ package dto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.List;
 
 public class Orders {
     private int orderId;
     private User user;
-    private Pizza pizza;
+    private List<Pizza> pizza;
     private int qty ;
     private LocalDate date;
     private LocalTime hours;
     private boolean finish;
 
 
-    public Orders(int orderId, dto.User user, dto.Pizza pizza, int qty, LocalDate date,LocalTime hours, boolean finish) {
+    public Orders(int orderId, dto.User user, List<Pizza> pizza, int qty, LocalDate date,LocalTime hours, boolean finish) {
         this.orderId=orderId;
         this.user = user;
         this.hours=hours;
@@ -42,11 +43,11 @@ public class Orders {
         this.user = user;
     }
 
-    public Pizza getPizza() {
+    public List<Pizza> getPizza() {
         return pizza;
     }
 
-    public void setPizza(Pizza pizza) {
+    public void setPizza(List<Pizza> pizza) {
         this.pizza = pizza;
     }
 

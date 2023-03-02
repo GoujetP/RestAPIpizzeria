@@ -1,6 +1,8 @@
 package dao;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dto.Ingredient;
 import dto.Pizza;
@@ -8,6 +10,7 @@ import dto.Pizza;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import dao.*;
 public class PizzaDAO {
@@ -146,7 +149,17 @@ public class PizzaDAO {
         return price;
     }
 
-
+    public static void createPizza(Pizza p , String data) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String[] pizzaSplitCompo = data.split("compo");
+        System.out.println("Ingredients --> "+pizzaSplitCompo[1].substring(2,pizzaSplitCompo[1].length()-1));
+        System.out.println("Pizza --> "+pizzaSplitCompo[0].substring(0,pizzaSplitCompo[0].length()-2)+"}");
+        Ingredient[] compoIngredient = objectMapper.readValue(pizzaSplitCompo[1].substring(2,pizzaSplitCompo[1].length()-1) , Ingredient[].class);
+        p = objectMapper.readValue(pizzaSplitCompo[0].substring(0,pizzaSplitCompo[0].length()-2)+"}", Pizza.class);
+        ArrayList<Ingredient> compoFinal = new ArrayList<Ingredient>();
+        Collections.addAll(compoFinal, compoIngredient);
+        p.setCompo(compoFinal);
+    }
     public static JsonNode doMergeWithJackson(JsonNode jsonNode1, JsonNode jsonNode2) {
         if (jsonNode1.isObject() && jsonNode2.isObject()) {
             ObjectNode objectNode = (ObjectNode) jsonNode1;
