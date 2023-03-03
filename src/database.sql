@@ -85,7 +85,7 @@ insert into users VALUES (3,'colin','LOL','colin','32 avenue jolivet','Cassel','
 
 
 
-CREATE TABLE orders(orderId int,idU int,idP int,qty int,date date,hours time,finish bool,foreign key (idU) references users(id),foreign key (idP)references pizza(id),primary key (orderId,idP));
+CREATE TABLE orders(orderId int,idU int,idP int,qty int,date date,hours time,finish bool,foreign key (idU) references users(id),foreign key (idP)references pizza(id) on delete cascade,primary key (orderId,idP));
 insert into orders VALUES (2,1,2,2,'09/02/2022','12:02:45',true);
 insert into orders VALUES (2,1,3,2,'09/02/2022','12:02:45',true);
 insert into orders VALUES (3,3,5,1,'02/05/2022','11:30:59',false);

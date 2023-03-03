@@ -102,16 +102,16 @@ public class PizzaRestAPI extends HttpServlet {
             while ((line = reader.readLine()) != null) {
                 data.append(line);
             }
-            Pizza p = new Pizza();
-            PizzaDAO.createPizza(p, data.toString());
-            /*String[] pizzaSplitCompo = data.toString().split("compo");
+            //Pizza p = new Pizza();
+            //PizzaDAO.createPizza(p, data.toString());
+            String[] pizzaSplitCompo = data.toString().split("compo");
             System.out.println("Ingredients --> "+pizzaSplitCompo[1].substring(2,pizzaSplitCompo[1].length()-1));
             System.out.println("Pizza --> "+pizzaSplitCompo[0].substring(0,pizzaSplitCompo[0].length()-2)+"}");
             Ingredient[] compoIngredient = objectMapper.readValue(pizzaSplitCompo[1].substring(2,pizzaSplitCompo[1].length()-1) , Ingredient[].class);
             Pizza p = objectMapper.readValue(pizzaSplitCompo[0].substring(0,pizzaSplitCompo[0].length()-2)+"}", Pizza.class);
             ArrayList<Ingredient> compoFinal = new ArrayList<Ingredient>();
             Collections.addAll(compoFinal, compoIngredient);
-            p.setCompo(compoFinal);*/
+            p.setCompo(compoFinal);
             if(IngredientDAO.findById(p.getId()) != null){
                 res.sendError(HttpServletResponse.SC_CONFLICT);
                 return;
@@ -227,6 +227,7 @@ public class PizzaRestAPI extends HttpServlet {
         JsonNode jsonNodePizzaModif = objectMapper.readTree(data.toString());
         JsonNode mergePatch = PizzaDAO.doMergeWithJackson(jsonNodePizzaBasic, jsonNodePizzaModif);
         String pizzaFinalModif = objectMapper.writeValueAsString(mergePatch);
+        System.out.println("pizza final modif --> " +pizzaFinalModif);
         Pizza p = objectMapper.readValue(pizzaFinalModif, Pizza.class);
         PizzaDAO.remove(Integer.parseInt(id));
         p.setPrice(p.getPrice()+2.0);

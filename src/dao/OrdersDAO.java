@@ -17,7 +17,7 @@ public class OrdersDAO {
         List<Orders> orders = new ArrayList<>();
         try {
             DS.getConnection();
-            PreparedStatement stmt= DS.connection.prepareStatement("Select * from orders where orderid = ?");
+            PreparedStatement stmt= DS.connection.prepareStatement("Select * from orders where orderid = ? LIMIT 1");
             stmt.setInt(1,id);
             ResultSet rs = stmt.executeQuery();
             DS.closeConnection();
@@ -85,16 +85,12 @@ public class OrdersDAO {
     }
 
     public static double prixfinal(int id) {
-        int rslt=0;
+        double rslt=0;
+        Orders order = OrdersDAO.findById(id).get(0);
         try {
-            DS.getConnection();
-            PreparedStatement stmt= DS.connection.prepareStatement("select sum(i.price+p.price)*qty as total from orders INNER JOIN pizza p on p.id = orders.idP  INNER JOIN compo c on p.id = c.idP INNER JOIN ingredients i on i.id = c.idI where orderId=? group by idU,qty;");
-            stmt.setInt(1,id);
-            ResultSet rs = stmt.executeQuery();
-            DS.closeConnection();
-            rs.next();
-            rslt=rs.getInt("total");
-            System.out.println("All is ok!");
+            for (Pizza p : order.getPizza()){
+                rslt+=p.getPrice();
+            }
         } catch (Exception e) {
             return rslt;
         }
