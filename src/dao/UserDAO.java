@@ -49,7 +49,7 @@ public class UserDAO {
         
     }
     public static boolean checkToken(String token){
-        boolean check=false;
+
         String username=JwtManager.tokenUsername(token);
         String password = null;
         try {
@@ -62,13 +62,14 @@ public class UserDAO {
             password=rs.getString("password");
         };
         JwtManager.decodeJWT(token,password);//pour check la validité
-        check=JwtManager.createJWT(username,password).equals(token);
+        //check=JwtManager.createJWT(username,password).equals(token);
         System.out.println("All is ok!");
+        return true;
             
     } catch (Exception e) {
         return false;
     }
-        return check;
+
 }
 
 

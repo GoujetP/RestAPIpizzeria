@@ -35,16 +35,7 @@ public class IngredientRestAPI extends HttpServlet {
         PrintWriter out = res.getWriter();
         ObjectMapper objectMapper = new ObjectMapper();
         String info = req.getPathInfo();
-        String authorization = req.getHeader("Authorization");
-        if (authorization == null || !authorization.startsWith("Basic")){
-            res.sendError(999);
-            return;
-        }
-        String token = authorization.substring("Basic".length()).trim();
-        if (token==null || !UserDAO.checkToken(token)) {
-            res.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
-        }
+
         if (info == null || info.equals("/")) {
             Collection<Ingredient> models = IngredientDAO.findAll();
             String jsonstring = objectMapper.writeValueAsString(models);
@@ -89,11 +80,11 @@ public class IngredientRestAPI extends HttpServlet {
         BufferedReader reader = req.getReader();
         String line;
         String authorization = req.getHeader("Authorization");
-        if (authorization == null || !authorization.startsWith("Basic")){
+        if (authorization == null || !authorization.startsWith("Bearer")){
             res.sendError(999);
             return;
         }
-        String token = authorization.substring("Basic".length()).trim();
+        String token = authorization.substring("Bearer".length()).trim();
         if (token==null || !UserDAO.checkToken(token)) {
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
@@ -117,11 +108,11 @@ public class IngredientRestAPI extends HttpServlet {
         ObjectMapper objectMapper = new ObjectMapper();
         String info = req.getPathInfo();
         String authorization = req.getHeader("Authorization");
-        if (authorization == null || !authorization.startsWith("Basic")){
+        if (authorization == null || !authorization.startsWith("Bearer")){
             res.sendError(999);
             return;
         }
-        String token = authorization.substring("Basic".length()).trim();
+        String token = authorization.substring("Bearer".length()).trim();
         if (token==null || !UserDAO.checkToken(token)) {
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;

@@ -37,11 +37,11 @@ public class CommandRestAPI extends HttpServlet {
         objectMapper.registerModule(new JavaTimeModule());
         String info = req.getPathInfo();
         String authorization = req.getHeader("Authorization");
-        if (authorization == null || !authorization.startsWith("Basic")){
+        if (authorization == null || !authorization.startsWith("Bearer")){
             res.sendError(999);
             return;
         }
-        String token = authorization.substring("Basic".length()).trim();
+        String token = authorization.substring("Bearer".length()).trim();
         if (token==null || !UserDAO.checkToken(token)) {
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
@@ -89,16 +89,7 @@ public class CommandRestAPI extends HttpServlet {
         StringBuilder data = new StringBuilder();
         BufferedReader reader = req.getReader();
         String line ="";
-        String authorization = req.getHeader("Authorization");
-        if (authorization == null || !authorization.startsWith("Basic")){
-            res.sendError(999);
-            return;
-        }
-        String token = authorization.substring("Basic".length()).trim();
-        if (!UserDAO.checkToken(token)) {
-            res.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
-        }
+
         if (info == null || info.equals("/")) {
             while ((line = reader.readLine()) != null) {
                 data.append(line);

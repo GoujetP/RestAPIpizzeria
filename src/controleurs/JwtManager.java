@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
 
 public class JwtManager {
     // pour SHA256 : 256 bits mini
@@ -18,8 +19,8 @@ public class JwtManager {
 
     public static String createJWT(String username,String password) {
         // The JWT signature algorithm we will be using to sign the token
-        password=Hashing.sha256()
-                 .hashString(password, StandardCharsets.UTF_8)
+        password = Hashing.sha256()
+                .hashString(password, StandardCharsets.UTF_8)
                 .toString();
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         long nowMillis = System.currentTimeMillis();
@@ -31,22 +32,23 @@ public class JwtManager {
 
         // Let's set the JWT Claims
         JwtBuilder token = Jwts.builder()
-                //.setId(UUID.randomUUID().toString().replace("-", ""))
-                //.setIssuedAt(now)
+                .setId(UUID.randomUUID().toString().replace("-", ""))
+                .setIssuedAt(now)
                 .setSubject("PizzaJWTToken")
                 .setIssuer(username)
                 .signWith(signatureAlgorithm, signingKey);
 
         // if it has been specified, let's add the expiration
-       /* long ttlMillis = 1000 * 60 * 4; // 4mn
+        long ttlMillis = 1000 * 60 * 4; // 4mn
         if (ttlMillis > 0) {
             long expMillis = nowMillis + ttlMillis;
             Date exp = new Date(expMillis);
-            token.setExpiration(exp);*/ // 20mn par defaut
+            token.setExpiration(exp); // 20mn par defaut
+        }
+            // Builds the JWT and serializes it to a compact, URL-safe string
+            return token.compact();
+        }
 
-        // Builds the JWT and serializes it to a compact, URL-safe string
-        return token.compact();
-    }
 
     public static Claims decodeJWT(String jwt,String password) throws Exception {
         // This line will throw an exception if it is not a signed JWS (as expected)
@@ -63,7 +65,7 @@ public class JwtManager {
         String token[]=tokenJWT.split("\\.");
         String decode=new String(java.util.Base64.getDecoder().decode(token[1]));
         String payload[]=decode.split(",");
-        String iss[]=payload[1].split(":");
+        String iss[]=payload[3].split(":");
         return iss[1].replace("\"","").replace("}","");
     }
 }

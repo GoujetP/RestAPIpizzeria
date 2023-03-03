@@ -10,11 +10,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/tokenjwt")
+@WebServlet("/users/token")
 public class genererTokenJWT extends HttpServlet {
     
     
-    public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         res.setContentType("application/json;charset=UTF-8");
         PrintWriter out = res.getWriter();
         String username = req.getParameter("login");
@@ -23,7 +23,7 @@ public class genererTokenJWT extends HttpServlet {
         if(UserDAO.connect(username, password)){
             out.println(genererTokenJwt(username,password));
         }else{
-            out.println("false"+" "+username+" "+password);
+            out.println("Non reconnu"+" "+username+" "+password);
         };
     }
     public static String genererTokenJwt(String login, String password){
