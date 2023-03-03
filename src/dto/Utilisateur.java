@@ -1,28 +1,29 @@
 package dto;
 
-public class User {
-    protected int id;
+public class Utilisateur {
+    protected int uno;
 
 
 
     protected String name;
     protected String adresse;
-    protected String number;
+    protected String tel;
     protected String mail;
-    public User(int id, String name, String adresse, String number, String mail) {
-        this.id = id;
+    public Utilisateur() {}
+    public Utilisateur(int uno, String name, String adresse, String tel, String mail) {
+        this.uno = uno;
         this.name = name;
         this.adresse = adresse;
-        this.number = number;
+        this.tel = tel;
         this.mail = mail;
     }
 
-    public int getId() {
-        return id;
+    public int getUno() {
+        return uno;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUno(int uno) {
+        this.uno = uno;
     }
 
     public String getName() {
@@ -41,12 +42,12 @@ public class User {
         this.adresse = adresse;
     }
 
-    public String getNumber() {
-        return number;
+    public String getTel() {
+        return tel;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setTel(String tel) {
+        this.tel = tel;
     }
 
     public String getMail() {
@@ -55,9 +56,5 @@ public class User {
 
     public void setMail(String mail) {
         this.mail = mail;
-    }
-
-    public User() {
-
     }
 }

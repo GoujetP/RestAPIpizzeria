@@ -1,39 +1,38 @@
 package dto;
 
 public class Ingredient {
-    private int id;
+    private int ino;
     private String name;
-    private double price;
+    private double prix;
 
     public Ingredient() {
         super();
     }
 
-
-
-    public Ingredient(int id, String name, double price) {
-        this.id = id;
+    public Ingredient(int ino, String name, double prix) {
+        this.ino = ino;
         this.name = name;
-        this.price=price;
+        this.prix = prix;
     }
-    public int getId() {
-        return id;
+
+    public int getIno() {
+        return ino;
     }
-    public void setId(int id) {
-        this.id = id;
+
+    public void setIno(int ino) {
+        this.ino = ino;
     }
+
     public String getName() {
         return name;
     }
-    public double getPrice() {
-        return price;
+
+    public double getPrix() {
+        return prix;
     }
+
     public void setName(String name) {
         this.name = name;
-    }
-    @Override
-    public String toString() {
-        return "Ingredient [id=" + id + ", name=" + name +", price=" +price+" ]";
     }
 
 }

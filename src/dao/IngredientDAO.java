@@ -9,16 +9,16 @@ import dto.Ingredient;
 
 public class IngredientDAO {
     
-    public static Ingredient findById(int id) {
+    public static Ingredient findById(int ino) {
         Ingredient ingredient = new Ingredient();
         try {
             DS.getConnection();
-            PreparedStatement stmt=DS.connection.prepareStatement("Select * from ingredients where id = ?");
-            stmt.setInt(1,id);
+            PreparedStatement stmt=DS.connection.prepareStatement("Select * from ingredients where ino = ?");
+            stmt.setInt(1,ino);
             ResultSet rs = stmt.executeQuery();
             DS.closeConnection();
             rs.next();
-            ingredient = new Ingredient(rs.getInt("id"), rs.getString("name"),rs.getDouble("price"));
+            ingredient = new Ingredient(rs.getInt("ino"), rs.getString("name"),rs.getDouble("prix"));
             System.out.println("All is ok!");
         } catch (Exception e) {
             return null;
@@ -36,7 +36,7 @@ public class IngredientDAO {
             ResultSet rs = DS.executeQuery(query);
             DS.closeConnection();
             while(rs.next()){
-                ingredient.add(new Ingredient(rs.getInt("id"), rs.getString("name"),rs.getDouble("price")));
+                ingredient.add(new Ingredient(rs.getInt("ino"), rs.getString("name"),rs.getDouble("prix")));
             }
             System.out.println("All is ok!");
         } catch (Exception e) {
@@ -49,9 +49,9 @@ public class IngredientDAO {
 		try{
             DS.getConnection();
             PreparedStatement stmt= DS.connection.prepareStatement("insert into ingredients values(?,?,?)");
-            stmt.setInt(1,ingredient.getId());
+            stmt.setInt(1,ingredient.getIno());
             stmt.setString(2, ingredient.getName());
-            stmt.setDouble(3,ingredient.getPrice());
+            stmt.setDouble(3,ingredient.getPrix());
 			stmt.executeUpdate();
 			DS.closeConnection();
 		} catch(Exception e) {
@@ -59,11 +59,11 @@ public class IngredientDAO {
 		}
 	}
     
-    public static void remove(int id){
+    public static void remove(int ino){
 		try{
             DS.getConnection();
-            PreparedStatement stmt=DS.connection.prepareStatement("DELETE from ingredients where id= ?");
-            stmt.setInt(1,id);
+            PreparedStatement stmt=DS.connection.prepareStatement("DELETE from ingredients where ino= ?");
+            stmt.setInt(1,ino);
             stmt.executeUpdate();
             DS.closeConnection();
 		} catch(Exception e) {

@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.IngredientDAO;
 import dao.PizzaDAO;
-import dao.UserDAO;
 import dto.Ingredient;
 import dto.Pizza;
 import jakarta.servlet.ServletException;
@@ -33,11 +32,6 @@ public class PizzaRestAPI extends HttpServlet {
         String authorization = req.getHeader("Authorization");
         if (authorization == null || !authorization.startsWith("Basic")){
             res.sendError(999);
-            return;
-        }
-        String token = authorization.substring("Basic".length()).trim();
-        if (token==null || !UserDAO.checkToken(token)) {
-            res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
         if (info == null || info.equals("/")) {
@@ -93,11 +87,6 @@ public class PizzaRestAPI extends HttpServlet {
             res.sendError(999);
             return;
         }
-        String token = authorization.substring("Basic".length()).trim();
-        if (token==null || !UserDAO.checkToken(token)) {
-            res.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
-        }
         if (info == null || info.equals("/")) {
             while ((line = reader.readLine()) != null) {
                 data.append(line);
@@ -111,8 +100,8 @@ public class PizzaRestAPI extends HttpServlet {
             Pizza p = objectMapper.readValue(pizzaSplitCompo[0].substring(0,pizzaSplitCompo[0].length()-2)+"}", Pizza.class);
             ArrayList<Ingredient> compoFinal = new ArrayList<Ingredient>();
             Collections.addAll(compoFinal, compoIngredient);
-            p.setCompo(compoFinal);
-            if(IngredientDAO.findById(p.getId()) != null){
+            p.setComposition(compoFinal);
+            if(IngredientDAO.findById(p.getPno()) != null){
                 res.sendError(HttpServletResponse.SC_CONFLICT);
                 return;
             }
@@ -145,11 +134,6 @@ public class PizzaRestAPI extends HttpServlet {
         String authorization = req.getHeader("Authorization");
         if (authorization == null || !authorization.startsWith("Basic")){
             res.sendError(999);
-            return;
-        }
-        String token = authorization.substring("Basic".length()).trim();
-        if (token==null || !UserDAO.checkToken(token)) {
-            res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
         if (info == null || info.equals("/")) {
@@ -206,11 +190,6 @@ public class PizzaRestAPI extends HttpServlet {
             res.sendError(999);
             return;
         }
-        String token = authorization.substring("Basic".length()).trim();
-        if (token==null || !UserDAO.checkToken(token)) {
-            res.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
-        }
         String[] splits = info.split("/");
         if (splits.length != 2 ) {
             res.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -230,7 +209,7 @@ public class PizzaRestAPI extends HttpServlet {
         System.out.println("pizza final modif --> " +pizzaFinalModif);
         Pizza p = objectMapper.readValue(pizzaFinalModif, Pizza.class);
         PizzaDAO.remove(Integer.parseInt(id));
-        p.setPrice(p.getPrice()+2.0);
+        p.setPrix(p.getPrix()+2.0);
         PizzaDAO.save(p);
     }
 

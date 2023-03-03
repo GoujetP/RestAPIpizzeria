@@ -12,18 +12,18 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import dao.*;
+
 public class PizzaDAO {
-	public static Pizza findById(int id) {
+	public static Pizza findById(int pno) {
         Pizza pizza = new Pizza();
         try {
             DS.getConnection();
-            PreparedStatement stmt=DS.connection.prepareStatement("Select * from pizza where id = ?");
-            stmt.setInt(1,id);
+            PreparedStatement stmt=DS.connection.prepareStatement("Select * from pizza where pno = ?");
+            stmt.setInt(1,pno);
             ResultSet rs = stmt.executeQuery();
             DS.closeConnection();
             rs.next();
-            pizza = new Pizza( rs.getInt("id"),rs.getString("name"),rs.getString("pate"),rs.getDouble("price"),CompoDao.findCompoById(rs.getInt("id")));
+            pizza = new Pizza( rs.getInt("pno"),rs.getString("name"),rs.getString("pate"),rs.getDouble("prix"), CompositionDAO.findCompoById(rs.getInt("pno")));
             System.out.println("All is ok!");
         } catch (Exception e) {
             return null;
@@ -42,7 +42,7 @@ public class PizzaDAO {
             DS.closeConnection();
             while(rs.next()){
 
-                pizza.add(new Pizza( rs.getInt("id"),rs.getString("name"),rs.getString("pate"),rs.getDouble("price"),CompoDao.findCompoById(rs.getInt("id"))));
+                pizza.add(new Pizza( rs.getInt("pno"),rs.getString("name"),rs.getString("pate"),rs.getDouble("prix"), CompositionDAO.findCompoById(rs.getInt("pno"))));
             }
             System.out.println("All is ok!");
         } catch (Exception e) {
@@ -55,13 +55,13 @@ public class PizzaDAO {
 		try{
             DS.getConnection();
             PreparedStatement stmt= DS.connection.prepareStatement("insert into pizza values(?,?,?,?)");
-            stmt.setInt(1,pizza.getId());
+            stmt.setInt(1,pizza.getPno());
             stmt.setString(2, pizza.getName());
-            stmt.setDouble(3,pizza.getPrice());
+            stmt.setDouble(3,pizza.getPrix());
             stmt.setString(4,pizza.getPate());
             String queryCompo = "";
-            for (Ingredient i : pizza.getCompo()){
-                queryCompo = queryCompo +" Insert into compo values("+pizza.getId()+","+i.getId()+");";
+            for (Ingredient i : pizza.getComposition()){
+                queryCompo = queryCompo +" Insert into composition values("+pizza.getPno()+","+i.getIno()+");";
 
             }
 			stmt.executeUpdate();
@@ -71,13 +71,13 @@ public class PizzaDAO {
 			System.out.println("ERREUR \n" + e.getMessage());
 		}
 	}
-    public static boolean contient (int idP,int idI){
+    public static boolean contient (int pno,int ino){
         int size=0;
         try{
             DS.getConnection();
-            PreparedStatement stmt=DS.connection.prepareStatement("Select count(*) from compo where idP=? and idi=?");
-            stmt.setInt(1,idP);
-            stmt.setInt(2,idI);
+            PreparedStatement stmt=DS.connection.prepareStatement("Select count(*) from composition where pno=? and ino=?");
+            stmt.setInt(1,pno);
+            stmt.setInt(2,ino);
 			ResultSet rs=stmt.executeQuery();
 			DS.closeConnection();
             if (rs != null) 
@@ -93,23 +93,23 @@ public class PizzaDAO {
         return size!=0;
     }  
 
-    public static void remove(int id){
+    public static void remove(int pno){
 		try{
             DS.getConnection();
-            PreparedStatement stmt=DS.connection.prepareStatement("DELETE from pizza where id= ?");
-            stmt.setInt(1,id);
+            PreparedStatement stmt=DS.connection.prepareStatement("DELETE from pizza where pno= ?");
+            stmt.setInt(1,pno);
 			stmt.executeUpdate();
 			DS.closeConnection();
 		} catch(Exception e) {
 			System.out.println("ERREUR \n" + e.getMessage());
 		}
 	}
-    public static void removeIP(int idP,int idI){
+    public static void removeIP(int pno,int ino){
 		try{
             DS.getConnection();
-            PreparedStatement stmt=DS.connection.prepareStatement("DELETE from compo where idP= ? and idI=?");
-            stmt.setInt(1,idP);
-            stmt.setInt(2,idI);
+            PreparedStatement stmt=DS.connection.prepareStatement("DELETE from composition where pno= ? and inno=?");
+            stmt.setInt(1,pno);
+            stmt.setInt(2,ino);
             stmt.executeUpdate();
             DS.closeConnection();
 		} catch(Exception e) {
@@ -120,45 +120,33 @@ public class PizzaDAO {
     public static void addIngredient(Pizza p ,Ingredient i){
         try{
             DS.getConnection();
-            PreparedStatement stmt=DS.connection.prepareStatement("Insert into compo values(?,?)");
-            stmt.setInt(1,p.getId());
-            stmt.setInt(2,i.getId());
+            PreparedStatement stmt=DS.connection.prepareStatement("Insert into composition values(?,?)");
+            stmt.setInt(1,p.getPno());
+            stmt.setInt(2,i.getIno());
             stmt.executeUpdate();
             DS.closeConnection();
         } catch(Exception e) {
             System.out.println("ERREUR \n" + e.getMessage());
         }
     }
-    public static double getFinalPrice(int idP){
-       double price=0.0;
+    public static double getFinalPrice(int pno){
+       double prix=0.0;
         try {
             DS.getConnection();
-            PreparedStatement stmt=DS.connection.prepareStatement("select pizza.price,sum(ingredients.price)from pizza INNER JOIN compo ON compo.idP = pizza.id INNER JOIN ingredients ON compo.idI = ingredients.id where idP= ? group by pizza.price;");
-            stmt.setInt(1,idP);
+            PreparedStatement stmt=DS.connection.prepareStatement("select pizza.prix,sum(ingredients.prix)from pizza INNER JOIN composition ON composition.pno = pizza.pno INNER JOIN ingredients ON composition.ino = ingredients.ino where pno= ? group by pizza.prix;");
+            stmt.setInt(1,pno);
             ResultSet rs = stmt.executeQuery();
             DS.closeConnection();
             while (true) {
                 assert rs != null;
                 if (!rs.next()) break;
-                price=Math.round(rs.getDouble("sum")+rs.getDouble("price"));
+                prix=Math.round(rs.getDouble("sum")+rs.getDouble("prix"));
             }
             System.out.println("All is ok!");
         } catch (Exception e) {
             return 0.0;
         }
-        return price;
-    }
-
-    public static void createPizza(Pizza p , String data) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        String[] pizzaSplitCompo = data.split("compo");
-        System.out.println("Ingredients --> "+pizzaSplitCompo[1].substring(2,pizzaSplitCompo[1].length()-1));
-        System.out.println("Pizza --> "+pizzaSplitCompo[0].substring(0,pizzaSplitCompo[0].length()-2)+"}");
-        Ingredient[] compoIngredient = objectMapper.readValue(pizzaSplitCompo[1].substring(2,pizzaSplitCompo[1].length()-1) , Ingredient[].class);
-        p = objectMapper.readValue(pizzaSplitCompo[0].substring(0,pizzaSplitCompo[0].length()-2)+"}", Pizza.class);
-        ArrayList<Ingredient> compoFinal = new ArrayList<Ingredient>();
-        Collections.addAll(compoFinal, compoIngredient);
-        p.setCompo(compoFinal);
+        return prix;
     }
     public static JsonNode doMergeWithJackson(JsonNode jsonNode1, JsonNode jsonNode2) {
         if (jsonNode1.isObject() && jsonNode2.isObject()) {

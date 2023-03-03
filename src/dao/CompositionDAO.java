@@ -9,24 +9,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class CompoDao {
+public class CompositionDAO {
 
-    public static List<Ingredient> findCompoById(int idP) {
-        ArrayList<Ingredient> rslt = new ArrayList<Ingredient>();
+    public static List<Ingredient> findCompoById(int pno) {
+        ArrayList<Ingredient> res = new ArrayList<Ingredient>();
         try {
-            String query = "Select * from ingredients INNER JOIN compo ON compo.idI = ingredients.id where idP = " + idP + " ;";
+            String query = "Select * from ingredients INNER JOIN composition ON composition.ino = ingredients.ino where pno = " + pno + " ;";
             DS.getConnection();
             ResultSet rs = DS.executeQuery(query);
             DS.closeConnection();
             while (true) {
                 assert rs != null;
                 if (!rs.next()) break;
-                rslt.add(new Ingredient(rs.getInt("id"), rs.getString("name"), rs.getDouble("price")));
+                res.add(new Ingredient(rs.getInt("ino"), rs.getString("name"), rs.getDouble("prix")));
             }
             System.out.println("All is ok!");
         } catch (Exception e) {
             return null;
         }
-        return rslt;
+        return res;
     }
 }

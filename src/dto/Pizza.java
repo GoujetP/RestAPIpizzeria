@@ -4,36 +4,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Pizza {
-	protected int id;
+	protected int pno;
 	protected String name;
 	protected String pate;
-	protected double price;
-	protected List<Ingredient>compo=new ArrayList<Ingredient>();
+	protected double prix;
+	protected List<Ingredient> composition =new ArrayList<Ingredient>();
 
 	public Pizza(){super();}
-	public Pizza(int id, String name, String pate, double price, List<Ingredient>compoP) {
+	public Pizza(int pno, String name, String pate, double prix, List<Ingredient>composition) {
 		super();
-		this.id=id;
+		this.pno =pno;
 		this.name = name;
 		this.pate = pate;
-		this.price = price;
-		this.compo=compoP;		//this.ingredients = ingredients;
+		this.prix = prix;
+		this.composition =composition;		//this.ingredients = ingredients;
 	}
-	public Pizza(int id,String name, String pate, double price) {
+	public Pizza(int pno,String name, String pate, double prix) {
 		super();
-		this.id=id;
+		this.pno =pno;
 		this.name = name;
 		this.pate = pate;
-		this.price = price;
+		this.prix = prix;
 	}
 
 
-	public int getId() {
-		return id;
+	public int getPno() {
+		return pno;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setPno(int pno) {
+		this.pno = pno;
 	}
 
 	public String getName() {
@@ -52,22 +52,22 @@ public class Pizza {
 		this.pate = pate;
 	}
 
-	public double getPrice() {
-		return price;
+	public double getPrix() {
+		return prix;
 	}
 
-	public void setPrice(double price) {
-		this.price = price;
+	public void setPrix(double prix) {
+		this.prix = prix;
 	}
 
-	public List<Ingredient> getCompo() {
-		return compo;
+	public List<Ingredient> getComposition() {
+		return composition;
 	}
 
 
 
-	public void setCompo(ArrayList<Ingredient> compoFinal) {
-		this.compo=compoFinal;
+	public void setComposition(ArrayList<Ingredient> compoFinal) {
+		this.composition =compoFinal;
 	}
 /*public Map<Integer, Ingredient> getIngredients() {
 		return ingredients;
@@ -85,11 +85,11 @@ public class Pizza {
 	@Override
 	public String toString() {
 		return "Pizza{" +
-				"id=" + id +
+				"id=" + pno +
 				", name='" + name + '\'' +
 				", pate='" + pate + '\'' +
-				", price=" + price +
-				", compo=" + compo +
+				", price=" + prix +
+				", compo=" + composition +
 				'}';
 	}
 }

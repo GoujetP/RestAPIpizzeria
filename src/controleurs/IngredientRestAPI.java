@@ -1,21 +1,13 @@
 package controleurs;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.IngredientDAO;
-import dao.UserDAO;
 import dto.Ingredient;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -38,11 +30,6 @@ public class IngredientRestAPI extends HttpServlet {
         String authorization = req.getHeader("Authorization");
         if (authorization == null || !authorization.startsWith("Basic")){
             res.sendError(999);
-            return;
-        }
-        String token = authorization.substring("Basic".length()).trim();
-        if (token==null || !UserDAO.checkToken(token)) {
-            res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
         if (info == null || info.equals("/")) {
@@ -93,18 +80,13 @@ public class IngredientRestAPI extends HttpServlet {
             res.sendError(999);
             return;
         }
-        String token = authorization.substring("Basic".length()).trim();
-        if (token==null || !UserDAO.checkToken(token)) {
-            res.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
-        }
         while ((line = reader.readLine()) != null) {
         	data.append(line);
         }
         
         Ingredient i = objectMapper.readValue(data.toString(), Ingredient.class);
         System.out.println(data);
-        if(IngredientDAO.findById(i.getId()) != null){
+        if(IngredientDAO.findById(i.getIno()) != null){
             res.sendError(HttpServletResponse.SC_CONFLICT); 
             return;
         }
@@ -119,11 +101,6 @@ public class IngredientRestAPI extends HttpServlet {
         String authorization = req.getHeader("Authorization");
         if (authorization == null || !authorization.startsWith("Basic")){
             res.sendError(999);
-            return;
-        }
-        String token = authorization.substring("Basic".length()).trim();
-        if (token==null || !UserDAO.checkToken(token)) {
-            res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
         if (info == null || info.equals("/")) {
