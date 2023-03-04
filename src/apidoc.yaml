@@ -1,0 +1,586 @@
+openapi: 3.0.1
+info:
+  title: Pizzaland API
+  description: Pizzaland API est une API REST qui mets a disposition  des  entreprises  tierces,  la  gestion  de  ses  pizzas  et  leurs ingrédients ainsi que les commandes qui sont effectuées par les clients. Sans API KEY vous AVEZ accés seulement aux GET
+  contact:
+    name: mounir khatri
+    url: https://www.khatrimounir.com/
+    email: mounir.khatri.etu@univ-lille.fr
+
+  version: '0.1'
+servers:
+  - url: http://localhost:8080/
+tags:
+  - name: users
+    description: Rêquetes API pour récuperer son API KEY
+  - name: ingrédients
+    description: Rêquetes API lié aux ingrédients
+
+  - name: pizzas
+    description: Rêquetes API lié aux pizzas
+
+
+
+  - name: commandes
+    description: Rêquetes API lié aux commandes
+
+paths:
+  /pizzeria/users/token:
+    get:
+      tags:
+        - users
+      description: Permet de Récupéré son API Key si l'utilisateur est dans la database
+      parameters:
+        - name: login
+          in: query
+          schema:
+            type: string
+          example: bgdu62
+        - name: password
+          in: query
+          schema:
+            type: string
+          example: moi
+      responses:
+        '200':
+          description: Token JWT
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: string
+                example: token
+      servers:
+        - url: http://localhost:8080/
+    servers:
+      - url: http://localhost:8080
+  /pizzeria/pizzas:
+    get:
+      tags:
+        - pizzas
+      description: Permet de récupéré toute les pizzas dans la database
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/Pizzas"
+      servers:
+        - url: http://localhost:8080/
+    post:
+      tags:
+        - pizzas
+      description: Permet d'ajouter une pizzas à la base de données
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Pizzas"
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: Authorization Header manquant ou type incorrect
+        '403':
+          description: Token invalide
+    servers:
+      - url: http://localhost:8080
+  /pizzeria/pizzas/{idPizza}:
+    parameters:
+      - in: path
+        name: idPizza
+        schema:
+          type: integer
+        required: true
+        description: numéro identifiant de la Pizza.
+    get:
+      tags:
+        - pizzas
+      description: Permet de récupéré une pizza dans la database grace à son ID
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/Pizzas"
+      servers:
+        - url: http://localhost:8080/
+    delete:
+      tags:
+        - pizzas
+      security:
+        - BearerAuth: []
+      description: Permet d'effacé une pizza dans la database grace à son ID
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: Authorization Header manquant ou type incorrect
+        '403':
+          description: Token invalide
+      servers:
+        - url: http://localhost:8080/
+    post:
+      tags:
+        - pizzas
+      security:
+        - BearerAuth: []
+      description: Permet de d'ajouter un ingredients dans une pizza dans la database grace à son ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                price:
+                  type: number
+                name:
+                  type: string
+                id:
+                  type: integer
+            examples:
+              '0':
+                value: "{\r\n  \"id\": 2,\r\n  \"name\": \"sauce tomate\",\r\n  \"price\": 0.8\r\n}"
+      responses:
+        '200':
+          description: success
+        '401':
+          description: Authorization Header manquant ou type incorrect
+        '403':
+          description: Token invalide
+      servers:
+        - url: http://localhost:8080/
+    patch:
+      tags:
+        - pizzas
+      security:
+        - BearerAuth: []
+      description: Permet de modifier les informations d'une pizza dans la database grace à son ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                price:
+                  type: number
+                name:
+                  type: string
+                id:
+                  type: integer
+            examples:
+              '1':
+                value: "{\r\n  \"name\": \"Pizza Saumon Test1\",\r\n  \"price\":11.99 \r\n}"
+              '2':
+                value: "{\r\n  \"name\": \"Pizza Saumon Modif\"\r\n}"
+              '3':
+                value: "{\r\n \"price\": \"11.99\"\r\n}"
+      responses:
+        '200':
+          description: success
+        '401':
+          description: Authorization Header manquant ou type incorrect
+        '403':
+          description: Token invalide
+      servers:
+        - url: http://localhost:8080/
+    servers:
+      - url: http://localhost:8080
+  /pizzeria/pizzas/{idPizza}/{idIngredient}:
+    parameters:
+      - in: path
+        name: idPizza
+        schema:
+          type: integer
+        required: true
+        description: numéro identifiant de la Pizza.
+      - in: path
+        name: idIngredient
+        schema:
+          type: integer
+        required: true
+        description: numéro identifiant de l'ingrédient.
+    delete:
+      tags:
+        - pizzas
+        - ingrédients
+      security:
+        - BearerAuth: []
+      description: Permet de supprimer un ingrédient dans une pizza grace a l'ID de la pizza et l'ID de l'ingrédient
+      responses:
+        '200':
+          description: success
+        '401':
+          description: Authorization Header manquant ou type incorrect
+        '403':
+          description: Token invalide
+      servers:
+        - url: http://localhost:8080/
+    servers:
+      - url: http://localhost:8080
+  /pizzeria/pizzas/{idPizza}/prixfinal:
+    parameters:
+      - in: path
+        name: idPizza
+        schema:
+          type: integer
+        required: true
+        description: numéro identifiant de la Pizza.
+    get:
+      tags:
+        - pizzas
+      description: Permet de récupéré le prix d'une pizza dans la database grace à son ID
+      responses:
+        '200':
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: number
+                example: "15.52"
+      servers:
+        - url: http://localhost:8080/
+    servers:
+      - url: http://localhost:8080
+
+
+  /pizzeria/ingredients:
+    get:
+      tags:
+        - ingrédients
+      description: Permet de récupéré tout les ingrédients dans la database
+      responses:
+        '200':
+          description: success
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/Ingredients'
+      servers:
+        - url: http://localhost:8080/
+    post:
+      tags:
+        - ingrédients
+      security:
+        - BearerAuth: []
+      description: Permet d'ajouter un ingrédients dans la database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                price:
+                  type: number
+                name:
+                  type: string
+                id:
+                  type: integer
+            examples:
+              '0':
+                value: "{\r\n  \"id\": 100,\r\n  \"name\": \"creme fraiche\",\r\n  \"price\": 1.2\r\n}"
+      responses:
+        '200':
+          description: success
+      servers:
+        - url: http://localhost:8080/
+    servers:
+      - url: http://localhost:8080
+
+  /pizzeria/ingredients/{idIngredient}:
+    parameters:
+      - in: path
+        name: idIngredient
+        schema:
+          type: integer
+        required: true
+        description: numéro identifiant de l'ingrédient.
+    get:
+      tags:
+        - ingrédients
+      description: Permet de récupéré un ingrédient dans la database grace à son ID
+      responses:
+        '200':
+          description: success
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/Ingredients"
+      servers:
+        - url: http://localhost:8080/
+    delete:
+      tags:
+        - ingrédients
+      security:
+        - BearerAuth: []
+      description: Permet d'effacer un ingrédient dans la database grace à son ID
+      responses:
+        '200':
+          description: success
+        '401':
+          description: Authorization Header manquant ou type incorrect
+        '403':
+          description: Token invalide
+      servers:
+        - url: http://localhost:8080/
+    servers:
+      - url: http://localhost:8080
+  /pizzeria/ingredients/{idIngredient}/name:
+    parameters:
+      - in: path
+        name: idIngredient
+        schema:
+          type: integer
+        required: true
+        description: numéro identifiant de l'ingrédient.
+    get:
+      tags:
+        - ingrédients
+      description: Permet de récupéré le nom d'un ingrédient dans la database grace à son ID
+      responses:
+        '200':
+          description: success
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: string
+                example: "jambon"
+      servers:
+        - url: http://localhost:8080/
+    servers:
+      - url: http://localhost:8080
+  /pizzeria/commandes:
+    get:
+      tags:
+        - commandes
+      security:
+        - BearerAuth: []
+      description: Permet de récupéré toute les commandes dans la database grace à son ID
+      responses:
+        '200':
+          description: success
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/commandes"
+
+        '401':
+          description: Authorization Header manquant ou type incorrect
+        '403':
+          description: Token invalide
+
+      servers:
+        - url: http://localhost:8080/
+    post:
+      tags:
+        - commandes
+      security:
+        - BearerAuth: []
+      description: Permet d'ajouter une commande dans la database grace à son ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                hours:
+                  type: string
+                pizzas:
+                  type: array
+                  items:
+                    type: integer
+                orderId:
+                  type: integer
+                qty:
+                  type: integer
+                finish:
+                  type: boolean
+                idu:
+                  type: integer
+            examples:
+              '0':
+                value: "{\r\n  \"orderId\": 100,\r\n  \"idu\": 1,\r\n  \"pizzas\": [1,2,3],\r\n  \"date\": \"2002-02-27\",\r\n  \"hours\": \"12:30:56\",\r\n  \"finish\":true,\r\n  \"qty\":1\r\n}"
+      responses:
+        '200':
+          description: success
+        '401':
+          description: Authorization Header manquant ou type incorrect
+        '403':
+          description: Token invalide
+      servers:
+        - url: http://localhost:8080/
+    servers:
+      - url: http://localhost:8080
+  /pizzeria/commandes/{orderId}:
+    parameters:
+      - in: path
+        name: orderId
+        schema:
+          type: integer
+        required: true
+        description: numéro de la commande.
+    get:
+      tags:
+        - commandes
+      security:
+        - BearerAuth: []
+      description: Permet de récupéré une commande dans la database grace à son ID
+      responses:
+        '200':
+          description: success
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/commandes"
+      servers:
+        - url: http://localhost:8080/
+    servers:
+      - url: http://localhost:8080
+  /pizzeria/commandes/{orderId}/prixfinal:
+    parameters:
+      - in: path
+        name: orderId
+        schema:
+          type: integer
+        required: true
+        description: numéro de la commande.
+    get:
+      tags:
+        - commandes
+      description: Permet de récupéré le prix d'une commande dans la database grace à son ID
+      responses:
+        '200':
+          description: success
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: number
+                example: "55.2"
+      servers:
+        - url: http://localhost:8080/
+    servers:
+      - url: http://localhost:8080
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Pizzas:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+            example: 2
+            description: ID de la pizza.
+          name:
+            type: string
+            example: Pizza 4 fromages
+            description: nom de la pizza.
+          pate:
+            type: string
+            example: fine
+            description: type de pate
+          price:
+            type: number
+            example: "6.99"
+            description: prix total de la pizza
+          compo:
+            type: array
+            description: liste des ingrédients
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 2
+                  description: ID ingredients
+                name:
+                  type: string
+                  example: creme fraiche
+                  description: nom de l'ingrédient
+                price:
+                  type: number
+                  example: "12.6"
+                  description: prix de l'ingrédients
+
+    Ingredients:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+            example: 1
+            description: ID ingredients
+          name:
+            type: string
+            example: creme fraiche
+            description: nom de l'ingrédient
+          price:
+            type: number
+            example: "0.55"
+            description: prix de l'ingrédient
+
+    User:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+            example: 2
+            description: ID du client.
+          name:
+            type: string
+            example: Mounir
+            description: nom du client.
+          address:
+            type: string
+            example: rue des beaux gosses Hénin Beaumont
+            description: address du client
+          number:
+            type: string
+            example: 078195335555
+            description: numero de telephone du client
+
+
+    commandes:
+      type: array
+      items:
+        type: object
+        properties:
+          orderId:
+            type: integer
+            description: ID commande
+          user:
+            allOf:
+              - $ref: "#/components/schemas/User"
+
+          pizzas:
+            allOf:
+              - $ref: "#/components/schemas/Pizzas"
+          qty:
+            type: integer
+            description: quantité de pizzas
+          date:
+            type: array
+            items:
+              type: integer
+              description: "[YYYY,MM,DD]"
+              example: [2023,12,03]
+          hours:
+            type: array
+            items:
+              type: integer
+              description: "[Hour,minute,second]"
+              example: [11,05,36]
+          finish:
+            type: boolean
+            description: si la commande est fini =true
