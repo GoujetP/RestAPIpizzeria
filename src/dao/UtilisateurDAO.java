@@ -19,9 +19,10 @@ public class UtilisateurDAO {
             ResultSet rs = stmt.executeQuery();
             DS.closeConnection();
             rs.next();
-            utilisateur = new Utilisateur(rs.getInt("uno"), rs.getString("name"), ("" + rs.getString("rue") + " " + rs.getString("ville")), rs.getString("tel"), rs.getString("email"));
-            System.out.println("All is ok!");
+            utilisateur = new Utilisateur(rs.getInt("uno"), rs.getString("name"), ("" + rs.getString("rue") + " " + rs.getString("ville")), rs.getString("number"), rs.getString("email"));
+            System.out.println("All is ok! Utilisateur DAO --> "+utilisateur.getName() + "  |  "+utilisateur.getUno());
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
         return utilisateur;

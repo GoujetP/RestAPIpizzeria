@@ -36,7 +36,7 @@ public class CommandeDAO {
             DS.closeConnection();
             while(rs.next()) {
                 commandes.add (new Commande(rs.getInt("cno"), UtilisateurDAO.findById(rs.getInt("uno")),CompoPizzaDao.findCompoById(rs.getInt("cno")), rs.getInt("quantite"), rs.getDate("date").toLocalDate(),rs.getTime("heure").toLocalTime() , rs.getBoolean("fini")));
-            }System.out.println("All is ok!");
+            }System.out.println("All is ok! CommandeDAO util-->"+commandes.get(0).getUtilisateur().getName());
         } catch (Exception e) {
             return null;
         }
@@ -85,7 +85,7 @@ public class CommandeDAO {
 
 
     public static List<Pizza> getListPizza(JsonNode node) throws JsonProcessingException {
-            String str = node.get("pizzas").toString();
+            String str = node.get("pizza").toString();
             System.out.println(str);
             List<Pizza> res = new ArrayList<Pizza>();
             ObjectMapper objectMapper = new ObjectMapper();

@@ -107,7 +107,7 @@ public class PizzaDAO {
     public static void removeIP(int pno,int ino){
 		try{
             DS.getConnection();
-            PreparedStatement stmt=DS.connection.prepareStatement("DELETE from composition where pno= ? and inno=?");
+            PreparedStatement stmt=DS.connection.prepareStatement("DELETE from composition where pizza= ? and ingredient=?");
             stmt.setInt(1,pno);
             stmt.setInt(2,ino);
             stmt.executeUpdate();
@@ -133,7 +133,7 @@ public class PizzaDAO {
        double prix=0.0;
         try {
             DS.getConnection();
-            PreparedStatement stmt=DS.connection.prepareStatement("select pizza.prix,sum(ingredients.prix)from pizza INNER JOIN composition ON composition.pno = pizza.pno INNER JOIN ingredients ON composition.ino = ingredients.ino where pno= ? group by pizza.prix;");
+            PreparedStatement stmt=DS.connection.prepareStatement("select pizza.prix,sum(ingredients.prix)from pizza INNER JOIN composition ON composition.pizza = pizza.pno INNER JOIN ingredients ON composition.ingredient = ingredients.ino where pno= ? group by pizza.prix;");
             stmt.setInt(1,pno);
             ResultSet rs = stmt.executeQuery();
             DS.closeConnection();
@@ -144,6 +144,7 @@ public class PizzaDAO {
             }
             System.out.println("All is ok!");
         } catch (Exception e) {
+            e.printStackTrace();
             return 0.0;
         }
         return prix;

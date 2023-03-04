@@ -15,7 +15,7 @@ public class CompoPizzaDao {
     public static List<Pizza> findCompoById(int cno) {
         ArrayList<Pizza> res = new ArrayList<Pizza>();
         try {
-            String query = "select * from pizza inner join orders on commandes.cno="+cno+" where pizza.pno=orders.pno ;";
+            String query = "select * from pizza inner join commandes on commandes.cno="+cno+" where pizza.pno=commandes.pizza ;";
             DS.getConnection();
             ResultSet rs = DS.executeQuery(query);
             DS.closeConnection();

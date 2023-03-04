@@ -14,7 +14,7 @@ public class CompositionDAO {
     public static List<Ingredient> findCompoById(int pno) {
         ArrayList<Ingredient> res = new ArrayList<Ingredient>();
         try {
-            String query = "Select * from ingredients INNER JOIN composition ON composition.ino = ingredients.ino where pno = " + pno + " ;";
+            String query = "Select * from ingredients INNER JOIN composition ON composition.ingredient = ingredients.ino where composition.pizza = " + pno + " ;";
             DS.getConnection();
             ResultSet rs = DS.executeQuery(query);
             DS.closeConnection();
