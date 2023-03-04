@@ -38,7 +38,7 @@ public class CommandRestAPI extends HttpServlet {
         String info = req.getPathInfo();
         String authorization = req.getHeader("Authorization");
         if (authorization == null || !authorization.startsWith("Bearer")){
-            res.sendError(999);
+            res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
         String token = authorization.substring("Bearer".length()).trim();

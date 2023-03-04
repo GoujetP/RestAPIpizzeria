@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import dao.UserDAO;
+import dto.JwtManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -29,7 +30,7 @@ public class genererTokenJWT extends HttpServlet {
     public static String genererTokenJwt(String login, String password){
         
         try {
-           String token=JwtManager.createJWT(login,password);
+           String token= JwtManager.createJWT(login,password);
            
             System.out.println("All is ok!");
             return token;

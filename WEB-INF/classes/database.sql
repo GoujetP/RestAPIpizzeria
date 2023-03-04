@@ -100,17 +100,3 @@ insert into orders VALUES (8,2,4,1,'30/09/2022','12:11:21',true);
 
 
 
-select pizza.price,sum(ingredients.price)from pizza INNER JOIN compo ON compo.idP = pizza.id INNER JOIN ingredients ON compo.idI = ingredients.id where idP=1
-group by pizza.price;
-
-select idI from compo where idP=1;
-
-Select * from ingredients INNER JOIN compo ON compo.idI = ingredients.id where idP = 1;
-
-Select p.name,Sum(ingredients.price+p.price) from ingredients INNER JOIN compo ON compo.idI = ingredients.id INNER JOIN pizza p on p.id = compo.idP group by p.name ;
-
-select idU,uC.name,p.name,orders.qty,sum(i.price+p.price),date,finish from orders INNER JOIN pizza p on p.id = orders.idP INNER JOIN users uC on uC.id = orders.idU INNER JOIN compo c on p.id = c.idP INNER JOIN ingredients i on i.id = c.idI
-group by idU,orders.qty,date, p.name, uC.name,finish;
-
-select orderId,sum(i.price+p.price)*qty as total from orders INNER JOIN pizza p on p.id = orders.idP  INNER JOIN compo c on p.id = c.idP INNER JOIN ingredients i on i.id = c.idI where orderId=1
-group by idU,orderId,qty;

@@ -1,9 +1,11 @@
+/**
+ * UserDAO permet de requêter la table User dans la base de données.
+ * @author Pierre Goujet & Khatri Goujet
+ * @since 2023-03-04
+ */
 package dao;
 
-import dto.Ingredient;
-import dto.Pizza;
 import dto.User;
-import io.jsonwebtoken.Claims;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,10 +13,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import controleurs.JwtManager;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import dto.JwtManager;
 
 public class UserDAO {
+    /**
+     * cette méthode permet de récupérer un utilisateur de la base de données grâce à son id.
+     * @param id identifiant de l'utilisateur
+     * @return User
+     */
     public static User findById(int id) {
         User user = new User();
         try {
@@ -31,6 +37,12 @@ public class UserDAO {
         }
         return user;
     }
+    /**
+     * cette méthode permet de vérifier si des identifiants sont corrects.
+     * @param username identifiant de l'utilisateur
+     * @param password mot de passe de l'utilisateur
+     * @return true si les identifiants sont corrects, false sinon
+     */
     public static boolean connect(String username,String password){
         boolean present =false;
         try {
@@ -48,6 +60,11 @@ public class UserDAO {
         }
         
     }
+    /**
+     * cette méthode permet de vérifier si le token est valable.
+     * @param token token de connexion JWT
+     * @return true si le token est valable, false sinon
+     */
     public static boolean checkToken(String token){
 
         String username=JwtManager.tokenUsername(token);
@@ -72,58 +89,4 @@ public class UserDAO {
 
 }
 
-
-    public static Map<Integer,String> findAllToken() {
-        Map<Integer,String> tokens = new HashMap<Integer,String>();
-        try {
-            String query = "select id,token from users ;";
-            DS.getConnection();
-            ResultSet rs = DS.executeQuery(query);
-            DS.closeConnection();
-            while (rs.next()) {
-                tokens.put(rs.getInt("id"), rs.getString("token"));
-
-            }
-            System.out.println("All is ok!");
-        } catch (Exception e) {
-            System.out.println("ERREUR \n" + e.getMessage());
-        }
-        return tokens;
-    }
-
-    public static List<User> findAll() {
-        List<User> users = new ArrayList<>();
-        try {
-            String query = "select * from users ;";
-            DS.getConnection();
-            ResultSet rs = DS.executeQuery(query);
-            DS.closeConnection();
-            while (rs.next()) {
-
-                users.add(new User(rs.getInt("id"), rs.getString("name"), ("" + rs.getString("rue") + " " + rs.getString("city")), rs.getString("number"), rs.getString("email")));
-
-            }
-            System.out.println("All is ok!");
-        } catch (Exception e) {
-            System.out.println("ERREUR \n" + e.getMessage());
-        }
-        return users;
-    }
-
-    public static void save(User user) {
-        try {
-            DS.getConnection();
-            PreparedStatement stmt= DS.connection.prepareStatement("insert into users values(?,?,?,?,?,?)");
-            stmt.setInt(1,user.getId());
-            stmt.setString(2, user.getName());
-            stmt.setString(3,user.getAdresse());
-            stmt.setString(4,user.getAdresse());
-            stmt.setString(5,user.getNumber());
-            stmt.setString(6,user.getMail());
-            stmt.executeUpdate();
-            DS.closeConnection();
-        } catch (Exception e) {
-            System.out.println("ERREUR \n" + e.getMessage());
-        }
-    }
 }

@@ -1,19 +1,29 @@
-package dao;
+/**
+ * PizzaDao permet de requêter les Pizzas dans la base de données.
+ * @author Pierre Goujet & Khatri Goujet
+ * @since 2023-03-04
+ */
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+package dao;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dto.Ingredient;
 import dto.Pizza;
 
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import dao.*;
+
 public class PizzaDAO {
+    /**
+     * Permet de recuperer les Pizzas dans la base de données grâce à l'identifiant.
+     * @param id identifiant de la pizza à recuperer.
+     * @return Pizza
+     */
 	public static Pizza findById(int id) {
         Pizza pizza = new Pizza();
         try {
@@ -30,9 +40,12 @@ public class PizzaDAO {
         }
         return pizza;
     }
-    
-    
-    
+
+
+    /**
+     * Permet de récupérer les Pizzas dans la base de données grâce à l'identifiant.
+     * @return List<Pizza>
+     */
     public static List<Pizza> findAll() {
         List<Pizza> pizza = new ArrayList<>();
         try {
@@ -51,6 +64,10 @@ public class PizzaDAO {
         return pizza;
     }
 
+    /**
+     * Permet d'enregistrer une nouvelle pizza dans la base de données.
+     * @param pizza
+     */
     public static void save(Pizza pizza){
 		try{
             DS.getConnection();
@@ -71,28 +88,11 @@ public class PizzaDAO {
 			System.out.println("ERREUR \n" + e.getMessage());
 		}
 	}
-    public static boolean contient (int idP,int idI){
-        int size=0;
-        try{
-            DS.getConnection();
-            PreparedStatement stmt=DS.connection.prepareStatement("Select count(*) from compo where idP=? and idi=?");
-            stmt.setInt(1,idP);
-            stmt.setInt(2,idI);
-			ResultSet rs=stmt.executeQuery();
-			DS.closeConnection();
-            if (rs != null) 
-            {
-              rs.last();    // moves cursor to the last row
-                 size = rs.getRow(); // get row id 
-            }
 
-		} catch(Exception e) {
-			System.out.println("ERREUR \n" + e.getMessage());
-		}
-       
-        return size!=0;
-    }  
-
+    /**
+     * Permet de supprimer une pizza dans la base de données.
+     * @param id identifiant de la pizza à supprimer.
+     */
     public static void remove(int id){
 		try{
             DS.getConnection();
@@ -104,19 +104,12 @@ public class PizzaDAO {
 			System.out.println("ERREUR \n" + e.getMessage());
 		}
 	}
-    public static void removeIP(int idP,int idI){
-		try{
-            DS.getConnection();
-            PreparedStatement stmt=DS.connection.prepareStatement("DELETE from compo where idP= ? and idI=?");
-            stmt.setInt(1,idP);
-            stmt.setInt(2,idI);
-            stmt.executeUpdate();
-            DS.closeConnection();
-		} catch(Exception e) {
-			System.out.println("ERREUR \n" + e.getMessage());
-		}
-	}
 
+    /**
+     * Permet d'ajouter un ingrédient précis dans une pizza précise.
+     * @param p Pizza à pointer
+     * @param i ingrédient à ajouter
+     */
     public static void addIngredient(Pizza p ,Ingredient i){
         try{
             DS.getConnection();
@@ -129,6 +122,11 @@ public class PizzaDAO {
             System.out.println("ERREUR \n" + e.getMessage());
         }
     }
+    /**
+     * Permet d'obtenir le prix final aprés additions ,d'un pizza .
+     * @param idP Pizza à pointer
+     * @return  prix final
+     */
     public static double getFinalPrice(int idP){
        double price=0.0;
         try {
@@ -149,7 +147,7 @@ public class PizzaDAO {
         return price;
     }
 
-    public static void createPizza(Pizza p , String data) throws JsonProcessingException {
+    public static void createPizza(Pizza p , String data) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         String[] pizzaSplitCompo = data.split("compo");
         System.out.println("Ingredients --> "+pizzaSplitCompo[1].substring(2,pizzaSplitCompo[1].length()-1));

@@ -10,6 +10,7 @@ import java.util.Collections;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import dao.CompoDao;
 import dao.IngredientDAO;
 import dao.PizzaDAO;
 import dao.UserDAO;
@@ -30,16 +31,7 @@ public class PizzaRestAPI extends HttpServlet {
         PrintWriter out = res.getWriter();
         ObjectMapper objectMapper = new ObjectMapper();
         String info = req.getPathInfo();
-        String authorization = req.getHeader("Authorization");
-        if (authorization == null || !authorization.startsWith("Bearer")){
-            res.sendError(999);
-            return;
-        }
-        String token = authorization.substring("Bearer".length()).trim();
-        if (token==null || !UserDAO.checkToken(token)) {
-            res.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
-        }
+
         if (info == null || info.equals("/")) {
             Collection<Pizza> models = PizzaDAO.findAll();
             String jsonstring = objectMapper.writeValueAsString(models);
@@ -90,7 +82,7 @@ public class PizzaRestAPI extends HttpServlet {
         String line ="";
         String authorization = req.getHeader("Authorization");
         if (authorization == null || !authorization.startsWith("Bearer")){
-            res.sendError(999);
+            res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
         String token = authorization.substring("Bearer".length()).trim();
@@ -144,7 +136,7 @@ public class PizzaRestAPI extends HttpServlet {
         String info = req.getPathInfo();
         String authorization = req.getHeader("Authorization");
         if (authorization == null || !authorization.startsWith("Bearer")){
-            res.sendError(999);
+            res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
         String token = authorization.substring("Bearer".length()).trim();
@@ -170,11 +162,11 @@ public class PizzaRestAPI extends HttpServlet {
         }
         if(splits.length==3){
             String idI = splits[2];
-            if(PizzaDAO.contient(Integer.parseInt(idP), Integer.parseInt(idI))){
+            if(CompoDao.contient(Integer.parseInt(idP), Integer.parseInt(idI))){
                 res.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
-        PizzaDAO.removeIP(Integer.parseInt(idP), Integer.parseInt(idI));
+        CompoDao.removeIP(Integer.parseInt(idP), Integer.parseInt(idI));
 
         }
         if(splits.length==2){
@@ -203,7 +195,7 @@ public class PizzaRestAPI extends HttpServlet {
         PrintWriter out = res.getWriter();
         String authorization = req.getHeader("Authorization");
         if (authorization == null || !authorization.startsWith("Bearer")){
-            res.sendError(999);
+            res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
         String token = authorization.substring("Bearer".length()).trim();

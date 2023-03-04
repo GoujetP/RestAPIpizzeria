@@ -1,18 +1,27 @@
+/**
+ * OrdersDao permet de requêter les commandes dans la base de données.
+ * @author Pierre Goujet & Khatri Goujet
+ * @since 2023-03-04
+ */
+
 package dao;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dto.Ingredient;
 import dto.Orders;
 import dto.Pizza;
-import java.util.Arrays;
+
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class OrdersDAO {
+    /**
+     * cette méthode permet de récupérer tout les details d'une commande dans la base de données.
+     * @param id qui est l'identifiant de la commande à récupérer
+     * @return List<Orders>
+     */
     public static List<Orders> findById(int id) {
         List<Orders> orders = new ArrayList<>();
         try {
@@ -22,14 +31,17 @@ public class OrdersDAO {
             ResultSet rs = stmt.executeQuery();
             DS.closeConnection();
             while(rs.next()) {
-                orders.add(new Orders(rs.getInt("orderId"), UserDAO.findById(rs.getInt("idU")), CompoPizzaDao.findCompoById(rs.getInt("orderId")), rs.getInt("qty"), rs.getDate("date").toLocalDate(), rs.getTime("hours").toLocalTime(), rs.getBoolean("finish")));
+                orders.add(new Orders(rs.getInt("orderId"), UserDAO.findById(rs.getInt("idU")), findPizzasOrderById(rs.getInt("orderId")), rs.getInt("qty"), rs.getDate("date").toLocalDate(), rs.getTime("hours").toLocalTime(), rs.getBoolean("finish")));
             }System.out.println("All is ok!");
         } catch (Exception e) {
             return null;
         }
         return orders;
     }
-
+    /**
+     * cette méthode permet de récupérer tout les details de toutes les commandes dans la base de données.
+     * @return List<Orders>
+     */
 
     public static List<Orders> findAll() {
         List<Orders> orders = new ArrayList<>();
@@ -41,13 +53,18 @@ public class OrdersDAO {
             DS.closeConnection();
             while(rs.next()) {
 
-                orders.add (new Orders(rs.getInt("orderId"), UserDAO.findById(rs.getInt("idU")),CompoPizzaDao.findCompoById(rs.getInt("orderId")), rs.getInt("qty"), rs.getDate("date").toLocalDate(),rs.getTime("hours").toLocalTime() , rs.getBoolean("finish")));
+                orders.add (new Orders(rs.getInt("orderId"), UserDAO.findById(rs.getInt("idU")), findPizzasOrderById(rs.getInt("orderId")), rs.getInt("qty"), rs.getDate("date").toLocalDate(),rs.getTime("hours").toLocalTime() , rs.getBoolean("finish")));
             }System.out.println("All is ok!");
         } catch (Exception e) {
             return null;
         }
         return orders;
     }
+    /**
+     * cette méthode permet de récupérer tout les details de toutes les commandes dans la base de données.
+     * @param isFinish qui correspond au statut de la commande
+     * @return List<Orders>
+     */
     public static List<Orders> findByStatus(boolean isFinish) {
         List<Orders> orders = new ArrayList<>();
         try {DS.getConnection();
@@ -56,13 +73,17 @@ public class OrdersDAO {
             ResultSet rs = stmt.executeQuery();
             DS.closeConnection();
             while(rs.next()) {
-                orders.add (new Orders(rs.getInt("orderId"), UserDAO.findById(rs.getInt("idU")),CompoPizzaDao.findCompoById(rs.getInt("orderId")), rs.getInt("qty"), rs.getDate("date").toLocalDate(),rs.getTime("hours").toLocalTime() , rs.getBoolean("finish")));
+                orders.add (new Orders(rs.getInt("orderId"), UserDAO.findById(rs.getInt("idU")), findPizzasOrderById(rs.getInt("orderId")), rs.getInt("qty"), rs.getDate("date").toLocalDate(),rs.getTime("hours").toLocalTime() , rs.getBoolean("finish")));
             }System.out.println("All is ok!");
         } catch (Exception e) {
             return null;
         }
         return orders;
     }
+    /**
+     * cette méthode permet d'enregistrer une nouvelle commande dans la base de données.
+     * @param orders qui correspond à la commande
+     */
     public static void save(Orders orders){
         try {
             DS.getConnection();
@@ -83,7 +104,10 @@ public class OrdersDAO {
             System.out.println("ERREUR \n" + e.getMessage());
         }
     }
-
+    /**
+     * cette méthode permet de récupérer le prix final d'une commande.
+     * @param id id de la commande
+     */
     public static double prixfinal(int id) {
         double rslt=0;
         Orders order = OrdersDAO.findById(id).get(0);
@@ -161,4 +185,22 @@ public class OrdersDAO {
     }
 
 
+    public static List<Pizza> findPizzasOrderById(int idO) {
+        ArrayList<Pizza> rslt = new ArrayList<Pizza>();
+        try {
+            String query = "select * from pizza inner join orders on orders.orderid="+idO+" where pizza.id=orders.idp ;";
+            DS.getConnection();
+            ResultSet rs = DS.executeQuery(query);
+            DS.closeConnection();
+            while (true) {
+                assert rs != null;
+                if (!rs.next()) break;
+                rslt.add(PizzaDAO.findById(rs.getInt("id")));
+            }
+            System.out.println("All is ok!");
+        } catch (Exception e) {
+            return null;
+        }
+        return rslt;
+    }
 }

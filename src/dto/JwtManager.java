@@ -1,7 +1,15 @@
 // code pompé ici : https://developer.okta.com/blog/2018/10/31/jwts-with-java
 // lui-même inspiré par : https://www.baeldung.com/java-json-web-tokens-jjwt
 // et sinon la doc : https://github.com/jwtk/jjwt/blob/master/README.md
-package controleurs;
+/**
+ * JWTmanager permet de chiffrer et de déchiffrer un token JWT.
+ * @author Pierre Goujet & Khatri Goujet
+ * @source https://www.baeldung.com/java-json-web-tokens-jjwt
+ * @source https://github.com/jwtk/jjwt/blob/master/README.md
+ * @source  https://developer.okta.com/blog/2018/10/31/jwts-with-java
+ * @since 2023-03-04
+ */
+package dto;
 
 import com.google.common.hash.Hashing;
 import io.jsonwebtoken.*;
@@ -14,8 +22,13 @@ import java.util.Date;
 import java.util.UUID;
 
 public class JwtManager {
-    // pour SHA256 : 256 bits mini
-    
+
+    /**
+     * permet de créer un token JWT.
+      * @param username
+     * @param password
+     * @return token JWT
+     */
 
     public static String createJWT(String username,String password) {
         // The JWT signature algorithm we will be using to sign the token
@@ -39,7 +52,7 @@ public class JwtManager {
                 .signWith(signatureAlgorithm, signingKey);
 
         // if it has been specified, let's add the expiration
-        long ttlMillis = 1000 * 60 * 4; // 4mn
+        long ttlMillis = 1000 * 60 * 15; // 15mn
         if (ttlMillis > 0) {
             long expMillis = nowMillis + ttlMillis;
             Date exp = new Date(expMillis);
@@ -49,7 +62,13 @@ public class JwtManager {
             return token.compact();
         }
 
-
+    /**
+     *
+     * @param jwt token JWT
+     * @param password password pour déchiffrer le token JWT
+     * @return Claims
+     * @throws Exception erreur si le token n'est pas valide ou expiré
+     */
     public static Claims decodeJWT(String jwt,String password) throws Exception {
         // This line will throw an exception if it is not a signed JWS (as expected)
         password=Hashing.sha256()
@@ -61,6 +80,12 @@ public class JwtManager {
                 // verifie la signature et l'iat
                 .parseClaimsJws(jwt).getBody();
     }
+
+    /**
+     * Permet de récupérer l'identifiant de l'utilisateur qui a créé le token JWT.'
+     * @param tokenJWT
+     * @return l'identifiant de l'utilisateur
+     */
     public static String tokenUsername(String tokenJWT){
         String token[]=tokenJWT.split("\\.");
         String decode=new String(java.util.Base64.getDecoder().decode(token[1]));
